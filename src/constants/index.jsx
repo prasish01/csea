@@ -3,49 +3,61 @@ export const testimonials = [
     id: "0",
     name: "Kareena Kumar",
     role: "President",
-    avatarUrl: "/images/testimonials/kareena.png",
-    comment:
+    avatar: "/images/testimonials/kareena.png",
+    quote:
       "Being part of AUTCSEA allows me to lead initiatives that truly bring students together and make learning computer science fun and collaborative.",
+    linkedin: "https://linkedin.com/in/kareena-kumar",
+    techStack: ["React", "TypeScript", "AWS"],
   },
   {
     id: "1",
     name: "Eden Bacani",
     role: "Vice President",
-    avatarUrl: "/images/testimonials/eden.png",
-    comment:
+    avatar: "/images/testimonials/eden.png",
+    quote:
       "I love helping organize events and workshops that give our members hands-on experience and connect them with like-minded peers.",
+    linkedin: "https://linkedin.com/in/eden-bacani",
+    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
   },
   {
     id: "2",
     name: "Param Patel",
     role: "Secretary",
-    avatarUrl: "/images/testimonials/param.png",
-    comment:
-      "Keeping the club organized and running smoothly is rewarding, and it’s amazing to see ideas turn into real projects.",
+    avatar: "/images/testimonials/param.png",
+    quote:
+      "Keeping the club organized and running smoothly is rewarding, and it's amazing to see ideas turn into real projects.",
+    linkedin: "https://linkedin.com/in/param-patel",
+    techStack: ["Python", "PostgreSQL", "Docker"],
   },
   {
     id: "3",
     name: "Chloe Kua",
     role: "Treasurer",
-    avatarUrl: "/images/testimonials/chloe.png",
-    comment:
-      "Managing the club’s resources allows me to support exciting events and opportunities for every member to grow.",
+    avatar: "/images/testimonials/chloe.png",
+    quote:
+      "Managing the club's resources allows me to support exciting events and opportunities for every member to grow.",
+    linkedin: "https://linkedin.com/in/chloe-kua",
+    techStack: ["Vue.js", "Node.js", "Figma"],
   },
   {
     id: "4",
     name: "Ali Mojdehi",
     role: "Outreach Executive",
-    avatarUrl: "/images/testimonials/ali.png",
-    comment:
+    avatar: "/images/testimonials/ali.png",
+    quote:
       "I enjoy building connections with other clubs and organizations, helping our members access more opportunities and experiences.",
+    linkedin: "https://linkedin.com/in/ali-mojdehi",
+    techStack: ["Go", "GraphQL", "Linux"],
   },
   {
     id: "5",
     name: "Francisca Nel",
     role: "Lead Marketing",
-    avatarUrl: "/images/testimonials/francisca.png",
-    comment:
+    avatar: "/images/testimonials/francisca.png",
+    quote:
       "Promoting our club and sharing our story is exciting, and seeing students get inspired by our events is the best part.",
+    linkedin: "https://linkedin.com/in/francisca-nel",
+    techStack: ["Figma", "Webflow", "Canva"],
   },
 ];
 
@@ -73,6 +85,70 @@ export const socials = [
     title: "Discord",
     icon: "/images/socials/discord.svg",
     url: "https://discord.com/invite/AUQFxgxd",
+  },
+];
+
+export const latestEvent = {
+  id: 1,
+  title: "AUT Chess Open 2025",
+  date: "Saturday, 15 March 2025",
+  time: "10:00 AM – 5:00 PM",
+  location: "AUT City Campus, WG Building – Room 402",
+  images: [
+    "/images/project-1.png",
+    "/images/project-2.png",
+    "/images/project-3.png",
+  ],
+  description:
+    "Join us for our biggest tournament of the year! The AUT Chess Open 2025 is open to all students — from complete beginners to seasoned players. Compete for prizes, meet fellow chess enthusiasts, and enjoy a full day of competitive play.",
+  spotsLeft: 12,
+  totalSpots: 60,
+  tags: ["Tournament", "Open to All", "Prizes"],
+  registerLink: "#",
+};
+
+export const pastEvents = [
+  {
+    id: 2,
+    title: "End-of-Year Chess Blitz",
+    date: "8 November 2024",
+    location: "WG Building – Room 301",
+    images: [
+      "/images/project-1.png",
+      "/images/project-2.png",
+      "/images/project-3.png",
+    ],
+    summary:
+      "A fast-paced blitz tournament wrapping up Semester 2. 38 players competed across 7 rapid rounds.",
+    highlights: ["38 participants", "7 rounds", "3 prizes awarded"],
+  },
+  {
+    id: 3,
+    title: "Beginners Workshop Series",
+    date: "April – May 2024",
+    location: "Online (Zoom)",
+    images: [
+      "/images/project-2.png",
+      "/images/project-3.png",
+      "/images/project-1.png",
+    ],
+    summary:
+      "A four-session online workshop introducing chess fundamentals to new students. Over 50 people attended at least one session.",
+    highlights: ["4 sessions", "50+ attendees", "Free to join"],
+  },
+  {
+    id: 4,
+    title: "Inter-Club Friendly Match",
+    date: "20 August 2024",
+    location: "AUT South Campus",
+    images: [
+      "/images/project-3.png",
+      "/images/project-1.png",
+      "/images/project-2.png",
+    ],
+    summary:
+      "AUTCSEA faced off against the UoA Chess Club in a friendly inter-university match. A great day of chess and camaraderie.",
+    highlights: ["2 clubs", "20 boards", "Friendly format"],
   },
 ];
 
@@ -228,5 +304,83 @@ export const links = [
     title: "Web",
     icon: <Web />,
     url: "#",
+  },
+];
+
+export const projects = [
+  {
+    id: 1,
+    title: "Chess Event Organiser",
+    shortDesc:
+      "A web platform to organise chess tournaments, manage players, and track match progress.",
+    images: [
+      "/images/project-1.png",
+      "/images/project-2.png",
+      "/images/project-3.png",
+    ],
+    overview:
+      "Chess Event Organiser is a student-led project aimed at simplifying how chess tournaments are planned and managed within university clubs.",
+    features: [
+      "Create and manage tournaments",
+      "Player registration and brackets",
+      "Match tracking and results",
+      "Clean, beginner-friendly interface",
+    ],
+    highlights: [
+      "Student-led initiative",
+      "Real-world club usage",
+      "Scalable structure",
+    ],
+    techStack: ["React", "JavaScript", "Tailwind CSS", "Figma"],
+  },
+  {
+    id: 2,
+    title: "Campus Event Tracker",
+    shortDesc:
+      "A centralised platform to discover events, workshops, and activities across campus.",
+    images: [
+      "/images/project-2.png",
+      "/images/project-3.png",
+      "/images/project-1.png",
+    ],
+    overview:
+      "Campus Event Tracker helps students stay updated with academic and social events happening across the university in one place.",
+    features: [
+      "Event listings with filters",
+      "Club and society dashboards",
+      "Responsive design for mobile users",
+      "Simple admin event posting",
+    ],
+    highlights: [
+      "Improves student engagement",
+      "Mobile-first approach",
+      "Easy to scale",
+    ],
+    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
+  },
+  {
+    id: 3,
+    title: "Real-Time Chat App",
+    shortDesc:
+      "A modern chat application supporting rooms, reactions, and real-time messaging.",
+    images: [
+      "/images/project-3.png",
+      "/images/project-1.png",
+      "/images/project-2.png",
+    ],
+    overview:
+      "This project explores real-time communication using WebSockets, focusing on performance, usability, and clean UI design.",
+    features: [
+      "Real-time messaging with WebSockets",
+      "Public and private chat rooms",
+      "Emoji reactions and message status",
+      "Optimised for low latency",
+    ],
+    highlights: [
+      "Real-time architecture",
+      "Production-style structure",
+      "Scalable messaging",
+    ],
+    techStack: ["React", "Node.js", "WebSocket"],
   },
 ];

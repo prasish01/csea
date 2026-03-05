@@ -1,276 +1,593 @@
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useLayoutEffect } from "react";
+import ImageCarousel from "../components/Imagecarousel";
+import { projects as projectsData } from "../constants/index";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "../styles/project.css";
 
-/* =======================
-   Project Data (Demo)
-   ======================= */
+gsap.registerPlugin(ScrollTrigger);
 
-const projects = [
-  {
-    id: 1,
-    title: "Chess Event Organiser",
-    shortDesc:
-      "A web platform to organise chess tournaments, manage players, and track match progress.",
-    banner: "/images/project-3.png",
-    overview:
-      "Chess Event Organiser is a student-led project aimed at simplifying how chess tournaments are planned and managed within university clubs.",
-    features: [
-      "Create and manage tournaments",
-      "Player registration and brackets",
-      "Match tracking and results",
-      "Clean, beginner-friendly interface",
-    ],
-    highlights: [
-      "Student-led initiative",
-      "Real-world club usage",
-      "Scalable structure",
-    ],
-    techStack: ["React", "JavaScript", "Tailwind CSS", "Figma"],
-  },
-  {
-    id: 2,
-    title: "Campus Event Tracker",
-    shortDesc:
-      "A centralised platform to discover events, workshops, and activities across campus.",
-    banner: "/images/project-2.png",
-    overview:
-      "Campus Event Tracker helps students stay updated with academic and social events happening across the university in one place.",
-    features: [
-      "Event listings with filters",
-      "Club and society dashboards",
-      "Responsive design for mobile users",
-      "Simple admin event posting",
-    ],
-    highlights: [
-      "Improves student engagement",
-      "Mobile-first approach",
-      "Easy to scale for multiple campuses",
-    ],
-    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
-  },
-  {
-    id: 3,
-    title: "Real-Time Chat App",
-    shortDesc:
-      "A modern chat application supporting rooms, reactions, and real-time messaging.",
-    banner: "/images/project-3.png",
-    overview:
-      "This project explores real-time communication using WebSockets, focusing on performance, usability, and clean UI design.",
-    features: [
-      "Real-time messaging with WebSockets",
-      "Public and private chat rooms",
-      "Emoji reactions and message status",
-      "Optimised for low latency",
-    ],
-    highlights: [
-      "Real-time architecture",
-      "Production-style structure",
-      "Scalable messaging system",
-    ],
-    techStack: ["React", "Node.js", "WebSocket"],
-  },
+/* ─────────────────────────────────────────────────────────
+   Sub-components
+───────────────────────────────────────────────────────── */
+
+const SplitWords = ({ text, accent = false }) => (
+  <span className={`pr-split-line${accent ? " pr-heading-accent" : ""}`}>
+    {text.split(" ").map((word, i) => (
+      <span key={i} className="pr-word-clip">
+        <span className="pr-word-inner">{word}</span>
+      </span>
+    ))}
+  </span>
+);
+
+const TechChip = ({ label }) => <span className="pr-tech-chip">{label}</span>;
+const Pill = ({ children }) => <span className="pr-pill">{children}</span>;
+
+/* ─────────────────────────────────────────────────────────
+   3D Tilt helpers
+───────────────────────────────────────────────────────── */
+const applyTilt = (el, e) => {
+  const rect = el.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -6;
+  const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+  gsap.to(el, {
+    rotateX,
+    rotateY,
+    transformPerspective: 1000,
+    ease: "power2.out",
+    duration: 0.4,
+  });
+};
+
+const resetTilt = (el) => {
+  gsap.to(el, {
+    rotateX: 0,
+    rotateY: 0,
+    ease: "elastic.out(1, 0.4)",
+    duration: 0.8,
+  });
+};
+
+/* ─────────────────────────────────────────────────────────
+   Project Card
+───────────────────────────────────────────────────────── */
+const ProjectCard = ({ project, index, cardRef, onClick, isLive }) => (
+  <article
+    ref={cardRef}
+    className="pr-card"
+    onClick={onClick}
+    onMouseMove={(e) => applyTilt(e.currentTarget, e)}
+    onMouseLeave={(e) => resetTilt(e.currentTarget)}
+  >
+    <div className="pr-card-img-wrap" onClick={(e) => e.stopPropagation()}>
+      <ImageCarousel images={project.images} alt={project.title} />
+      {isLive && (
+        <span className="pr-card-live">
+          <span className="pr-live-dot" />
+          live
+        </span>
+      )}
+      <span className="pr-card-number" aria-hidden="true">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+    </div>
+
+    <div className="pr-card-body">
+      <h3 className="pr-card-title pr-serif">{project.title}</h3>
+      <p className="pr-card-desc">{project.shortDesc}</p>
+      <div className="pr-tech-row">
+        {project.techStack.slice(0, 3).map((tech) => (
+          <TechChip key={tech} label={tech} />
+        ))}
+        {project.techStack.length > 3 && (
+          <TechChip label={`+${project.techStack.length - 3}`} />
+        )}
+      </div>
+    </div>
+
+    <div className="pr-card-footer">
+      <span className="pr-card-footer-label">View project</span>
+      <span className="pr-card-footer-arrow" aria-hidden="true">
+        →
+      </span>
+    </div>
+  </article>
+);
+
+/* ─────────────────────────────────────────────────────────
+   Project Modal
+───────────────────────────────────────────────────────── */
+const ProjectModal = ({ project, index, overlayRef, modalRef, onClose }) => (
+  <div
+    ref={overlayRef}
+    className="pr-modal-overlay"
+    onClick={onClose}
+    role="dialog"
+    aria-modal="true"
+    aria-label={project.title}
+  >
+    <div
+      ref={modalRef}
+      className="pr-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="pr-modal-img-col">
+        <ImageCarousel images={project.images} alt={project.title} />
+        <button
+          onClick={onClose}
+          className="pr-modal-close"
+          aria-label="Close project modal"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="pr-modal-content">
+        <p className="pr-modal-number pr-mono">
+          Project {String(index + 1).padStart(2, "0")}
+        </p>
+        <h3 className="pr-modal-title pr-serif">{project.title}</h3>
+        <p className="pr-modal-overview">{project.overview}</p>
+        <hr className="pr-modal-divider" />
+
+        <p className="pr-modal-sub-label">Key Features</p>
+        <ul className="pr-modal-features">
+          {project.features.map((f) => (
+            <li key={f}>{f}</li>
+          ))}
+        </ul>
+
+        <p className="pr-modal-sub-label">Highlights</p>
+        <div className="pr-pill-row">
+          {project.highlights.map((h) => (
+            <Pill key={h}>{h}</Pill>
+          ))}
+        </div>
+
+        <p className="pr-modal-sub-label">Tech Stack</p>
+        <div className="pr-tech-row" style={{ marginBottom: 0 }}>
+          {project.techStack.map((tech) => (
+            <TechChip key={tech} label={tech} />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+/* ─────────────────────────────────────────────────────────
+   Ticker data
+───────────────────────────────────────────────────────── */
+const TICKER_ITEMS = [
+  "Open Source",
+  "Student Built",
+  "Real Projects",
+  "React",
+  "Node.js",
+  "TypeScript",
+  "Full Stack",
+  "Club Projects",
+  "AUT CSEA",
 ];
 
-/* =======================
-   Component
-   ======================= */
-
-const ProjectsPage = () => {
+/* ─────────────────────────────────────────────────────────
+   Main Projects Section
+───────────────────────────────────────────────────────── */
+const Projects = () => {
   const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const featuredRef = useRef(null);
+  const featuredParallaxRef = useRef(null);
+  const viewBtnRef = useRef(null);
+  const cardsRef = useRef([]);
   const modalRef = useRef(null);
   const overlayRef = useRef(null);
+  const cursorGlowRef = useRef(null);
 
   const [activeProject, setActiveProject] = useState(null);
+  const activeIndex = projectsData.findIndex((p) => p.id === activeProject?.id);
 
-  /* Page entrance animation */
+  // Featured = first project
+  const featured = projectsData[0];
+  const restProjects = projectsData.slice(1);
+
+  // ── Cursor glow ──────────────────────────────────────
+  useEffect(() => {
+    const glow = cursorGlowRef.current;
+    if (!glow) return;
+    const move = (e) => {
+      gsap.to(glow, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  // ── GSAP entrance + scroll animations ───────────────
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".fade-up", {
-        y: 40,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 0.8,
+      // Heading word-clip reveal
+      gsap.to(".pr-word-inner", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
+        y: "0%",
+        duration: 0.9,
+        stagger: 0.07,
+        ease: "power4.out",
+        delay: 0.1,
+      });
+
+      gsap.to(".pr-label-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 88%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
         ease: "power2.out",
+      });
+
+      gsap.to(".pr-desc-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: "power3.out",
+        delay: 0.2,
+      });
+
+      gsap.to(".pr-line-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 82%" },
+        scaleX: 1,
+        duration: 1.0,
+        ease: "expo.out",
+        delay: 0.4,
+      });
+
+      // Code decoration fade in
+      gsap.to(".pr-code-deco", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 80%" },
+        opacity: 1,
+        duration: 1.2,
+        ease: "power2.out",
+        delay: 0.6,
+      });
+
+      // Stats count-up
+      document.querySelectorAll(".pr-stat-item").forEach((el, i) => {
+        gsap.to(el, {
+          scrollTrigger: { trigger: ".pr-stats-bar", start: "top 90%" },
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+          delay: i * 0.07,
+        });
+      });
+
+      // Featured card float in + parallax
+      gsap.to(featuredRef.current, {
+        scrollTrigger: { trigger: featuredRef.current, start: "top 82%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        delay: 0.1,
+      });
+
+      gsap.to(featuredParallaxRef.current, {
+        scrollTrigger: {
+          trigger: featuredRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+        y: -40,
+        ease: "none",
+      });
+
+      // View button pop in
+      gsap.from(viewBtnRef.current, {
+        scrollTrigger: { trigger: viewBtnRef.current, start: "top 92%" },
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.6,
+        ease: "back.out(2)",
+        delay: 0.4,
+      });
+
+      // Grid section label
+      gsap.to(".pr-grid-label-anim", {
+        scrollTrigger: { trigger: ".pr-grid-header", start: "top 90%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+
+      // Cards stagger cascade
+      cardsRef.current.filter(Boolean).forEach((card, i) => {
+        gsap.to(card, {
+          scrollTrigger: { trigger: card, start: "top 88%" },
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          ease: "power3.out",
+          delay: i * 0.08,
+        });
       });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  /* Modal animation */
+  // ── Modal effects ────────────────────────────────────
   useEffect(() => {
-    if (activeProject) {
-      document.body.style.overflow = "hidden";
-
-      gsap.fromTo(
-        overlayRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3 },
-      );
-
-      gsap.fromTo(
-        modalRef.current,
-        { y: 40, scale: 0.96, opacity: 0 },
-        {
-          y: 0,
-          scale: 1,
-          opacity: 1,
-          duration: 0.4,
-          ease: "power3.out",
-        },
-      );
-    } else {
-      document.body.style.overflow = "auto";
+    if (!activeProject) {
+      document.body.style.overflow = "";
+      return;
     }
+    document.body.style.overflow = "hidden";
+    gsap.to(overlayRef.current, {
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+    gsap.to(modalRef.current, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.45,
+      ease: "back.out(1.4)",
+    });
   }, [activeProject]);
 
-  /* Close modal on ESC */
+  const handleModalClose = () => {
+    if (!overlayRef.current) return;
+    gsap.to(overlayRef.current, {
+      opacity: 0,
+      duration: 0.2,
+      ease: "power2.in",
+    });
+    gsap.to(modalRef.current, {
+      opacity: 0,
+      scale: 0.94,
+      y: 12,
+      duration: 0.25,
+      ease: "power2.in",
+      onComplete: () => setActiveProject(null),
+    });
+  };
+
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === "Escape") setActiveProject(null);
+      if (e.key === "Escape") handleModalClose();
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
+  }, [activeProject]);
+
+  // ── Magnetic view button ─────────────────────────────
+  const handleBtnMove = (e) => {
+    const btn = viewBtnRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    gsap.to(btn, {
+      x: x * 0.25,
+      y: y * 0.25,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  };
+
+  const handleBtnLeave = () => {
+    gsap.to(viewBtnRef.current, {
+      x: 0,
+      y: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.4)",
+    });
+  };
+
+  const doubledTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
+
+  // Floating code snippet text
+  const codeSnippet = `const project = {
+  team: "AUTCSEA",
+  stack: ["React", "Node"],
+  year: 2025,
+  status: "building"
+};`;
 
   return (
-    <section ref={sectionRef} className="bg-p4 py-28 max-md:py-20">
-      <div className="container mx-auto px-6">
-        {/* Header */}
-        <div className="relative mb-12">
-          <div className="w-full h-64 bg-p1 rounded-2xl" />
-          <h2 className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">
-            Current Projects at AUTCSEA
-          </h2>
-        </div>
+    <section ref={sectionRef} className="pr-page mt-12">
+      {/* Cursor glow */}
+      <div ref={cursorGlowRef} className="pr-cursor-glow" aria-hidden="true" />
 
-        {/* Intro */}
-        <p className="fade-up text-center text-p2 max-w-3xl mx-auto mb-16">
-          These projects are built by students to solve real problems,
-          experiment with modern technologies, and gain hands-on experience.
-        </p>
-
-        {/* Projects Grid */}
-        <div className="fade-up grid grid-cols-3 gap-8 max-lg:grid-cols-2 max-md:grid-cols-1 mb-20">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              onClick={() => setActiveProject(project)}
-              className="cursor-pointer bg-[#fcc591] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <img
-                src={project.banner}
-                alt={project.title}
-                className="w-full h-48 object-cover"
-              />
-
-              <div className="p-6">
-                <h3 className="text-p1 text-2xl font-semibold mb-3">
-                  {project.title}
-                </h3>
-                <p className="text-p5 mb-4">{project.shortDesc}</p>
-
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="bg-p2 text-white px-3 py-1 rounded-full text-sm"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+      {/* ══ TICKER ══ */}
+      <div className="pr-ticker" aria-hidden="true">
+        <div className="pr-ticker-track">
+          {doubledTicker.map((item, i) => (
+            <span key={i} className="pr-ticker-item">
+              <span className="pr-ticker-dot" />
+              {item}
+            </span>
           ))}
         </div>
       </div>
 
-      {/* Modal */}
-      {activeProject && (
-        <div
-          ref={overlayRef}
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-6"
-          onClick={() => setActiveProject(null)}
-        >
-          <div
-            ref={modalRef}
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-5xl w-full bg-p4 rounded-3xl overflow-hidden"
-          >
-            {/* Close */}
-            <button
-              onClick={() => setActiveProject(null)}
-              className="absolute top-4 right-4 z-10 text-white text-xl"
-            >
-              ✕
-            </button>
+      {/* ══ HEADER ══ */}
+      <header ref={headerRef} className="pr-header">
+        {/* Floating code deco */}
+        <pre className="pr-code-deco" aria-hidden="true">
+          {codeSnippet}
+        </pre>
 
-            {/* Image */}
-            <div className="w-full h-[420px] bg-p3 flex items-center justify-center">
-              <img
-                src={activeProject.banner}
-                alt={activeProject.title}
-                className="max-h-full max-w-full object-contain"
-              />
-            </div>
-
-            {/* Content */}
-            <div className="p-10 max-md:p-6">
-              <h3 className="text-3xl font-bold text-p1 mb-3">
-                {activeProject.title}
-              </h3>
-
-              <p className="text-p2 mb-8 max-w-3xl">{activeProject.overview}</p>
-
-              <div className="grid grid-cols-2 gap-10 max-md:grid-cols-1">
-                {/* Features */}
-                <div>
-                  <h4 className="text-lg font-semibold text-p1 mb-3">
-                    Key Features
-                  </h4>
-                  <ul className="space-y-2 text-p2 list-disc pl-5">
-                    {activeProject.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Highlights */}
-                <div>
-                  <h4 className="text-lg font-semibold text-p1 mb-3">
-                    Project Highlights
-                  </h4>
-                  <ul className="space-y-2 text-p2 list-disc pl-5">
-                    {activeProject.highlights.map((item, index) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Tech Stack */}
-              <div className="mt-10">
-                <h4 className="text-lg font-semibold text-p1 mb-4">
-                  Tech Stack
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {activeProject.techStack.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="bg-p2 text-white px-4 py-1 rounded-full text-sm"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+        <div className="pr-header-inner">
+          <div>
+            <p className="pr-section-label pr-label-anim">AUTCSEA</p>
+            <h1 className="pr-heading pr-serif">
+              <SplitWords text="Our" />
+              <SplitWords text="Projects" accent />
+            </h1>
           </div>
+          <p className="pr-desc pr-desc-anim">
+            Built by students to solve real problems, experiment with modern
+            technologies, and gain hands-on experience.
+          </p>
         </div>
+        <div className="pr-header-divider pr-line-anim" />
+      </header>
+
+      {/* ══ STATS BAR ══ */}
+      <div className="pr-stats-bar">
+        {[
+          { val: projectsData.length, suffix: "", label: "Projects" },
+          {
+            val: projectsData.reduce((acc, p) => acc + p.techStack.length, 0),
+            suffix: "+",
+            label: "Technologies",
+          },
+          { val: 2025, suffix: "", label: "Season" },
+          { val: 100, suffix: "%", label: "Open Source" },
+        ].map(({ val, suffix, label }) => (
+          <div key={label} className="pr-stat-item">
+            <span className="pr-stat-val">
+              {val}
+              <span className="accent">{suffix}</span>
+            </span>
+            <span className="pr-stat-label">{label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="pr-wrap">
+        {/* ══ FEATURED PROJECT ══ */}
+        {featured && (
+          <section
+            className="pr-featured-section"
+            aria-label="Featured project"
+          >
+            <div className="pr-featured-label">
+              <span className="pr-featured-dot" aria-hidden="true" />
+              <span className="pr-section-label">Featured Project</span>
+            </div>
+
+            <div
+              ref={featuredRef}
+              className="pr-featured-card"
+              onMouseMove={(e) => applyTilt(e.currentTarget, e)}
+              onMouseLeave={(e) => resetTilt(e.currentTarget)}
+              onClick={() => setActiveProject(featured)}
+            >
+              {/* Image side */}
+              <div className="pr-featured-img-side">
+                <div ref={featuredParallaxRef} className="pr-featured-parallax">
+                  <ImageCarousel
+                    images={featured.images}
+                    alt={featured.title}
+                  />
+                </div>
+                <div className="pr-featured-badge">
+                  <span className="pr-badge-pill">Featured</span>
+                  <span className="pr-badge-pill blue">
+                    {featured.techStack[0]}
+                  </span>
+                </div>
+              </div>
+
+              {/* Info side */}
+              <div className="pr-featured-info">
+                <div>
+                  <h2 className="pr-featured-title pr-serif">
+                    {featured.title}
+                  </h2>
+                  <p className="pr-featured-overview">{featured.overview}</p>
+
+                  <div className="pr-featured-meta">
+                    <div className="pr-featured-meta-row">
+                      <div className="pr-meta-icon">🛠</div>
+                      <span>
+                        {featured.techStack.slice(0, 3).join(", ")}
+                        {featured.techStack.length > 3 && "…"}
+                      </span>
+                    </div>
+                    <div className="pr-featured-meta-row">
+                      <div className="pr-meta-icon">⭐</div>
+                      <span>{featured.highlights[0]}</span>
+                    </div>
+                  </div>
+
+                  <div className="pr-tech-row">
+                    {featured.techStack.map((tech) => (
+                      <TechChip key={tech} label={tech} />
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  ref={viewBtnRef}
+                  className="pr-view-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveProject(featured);
+                  }}
+                  onMouseMove={handleBtnMove}
+                  onMouseLeave={handleBtnLeave}
+                >
+                  Explore Project →
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ══ PROJECTS GRID ══ */}
+        <div className="pr-grid-header">
+          <div className="pr-grid-header-left">
+            <span
+              className="pr-section-label pr-grid-label-anim"
+              style={{ opacity: 0, transform: "translateY(10px)" }}
+            >
+              All Projects
+            </span>
+            <div className="pr-accent-line pr-line-anim" aria-hidden="true" />
+          </div>
+          <span className="pr-count-badge">{projectsData.length} projects</span>
+        </div>
+
+        <div className="pr-grid">
+          {projectsData.map((project, idx) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={idx}
+              isLive={idx === 0}
+              cardRef={(el) => (cardsRef.current[idx] = el)}
+              onClick={() => setActiveProject(project)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* ══ MODAL ══ */}
+      {activeProject && (
+        <ProjectModal
+          project={activeProject}
+          index={activeIndex}
+          overlayRef={overlayRef}
+          modalRef={modalRef}
+          onClose={handleModalClose}
+        />
       )}
     </section>
   );
 };
 
-export default ProjectsPage;
+export default Projects;

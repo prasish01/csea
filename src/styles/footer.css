@@ -1,0 +1,343 @@
+/* ─────────────────────────────────────────────
+   FOOTER — dark editorial, matches site theme
+───────────────────────────────────────────── */
+.ft {
+  background: #080300;
+  border-top: 1px solid rgba(200, 90, 0, 0.12);
+  font-family: "DM Sans", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Circuit grid */
+.ft::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(200, 90, 0, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 90, 0, 0.038) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Top vignette so grid fades in from top */
+.ft::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 45% at 50% 0%,
+    #080300 0%,
+    transparent 65%
+  );
+}
+
+/* ─────────────────────────────────────────────
+   MARQUEE STRIP
+───────────────────────────────────────────── */
+.ft-marquee {
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid rgba(200, 90, 0, 0.1);
+  overflow: hidden;
+  padding: 13px 0;
+  /* Gradient mask at edges */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+.ft-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: ft-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+@keyframes ft-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ft-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.ft-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 235, 210, 0.22);
+  user-select: none;
+}
+
+.ft-marquee-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(200, 90, 0, 0.5);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────
+   BODY
+───────────────────────────────────────────── */
+.ft-body {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 40px 0;
+}
+
+/* 3-column grid */
+.ft-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 56px;
+  margin-bottom: 52px;
+  padding-bottom: 52px;
+  border-bottom: 1px solid rgba(200, 90, 0, 0.09);
+}
+
+/* ── Brand column ── */
+.ft-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ft-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.88;
+  transition: opacity 0.2s;
+}
+.ft-logo:hover {
+  opacity: 0.65;
+}
+
+.ft-tagline {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: rgba(255, 235, 210, 0.4);
+  max-width: 260px;
+  margin-bottom: 24px;
+}
+
+/* Social row */
+.ft-socials {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.ft-social {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(20, 9, 0, 0.9);
+  border: 1px solid rgba(200, 90, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.ft-social img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  filter: brightness(0) invert(0.52);
+  transition: filter 0.2s;
+}
+
+.ft-social:hover {
+  border-color: #c85a00;
+  background: rgba(200, 90, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 18px rgba(200, 90, 0, 0.22);
+}
+
+.ft-social:hover img {
+  filter: brightness(0) invert(0.9);
+}
+
+/* ── Link columns ── */
+.ft-col-head {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c85a00;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.ft-col-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ft-col-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 235, 210, 0.4);
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.22s ease;
+  gap: 0;
+}
+
+/* Expanding dash on hover */
+.ft-col-link::before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 1px;
+  background: #c85a00;
+  transition:
+    width 0.25s ease,
+    margin-right 0.25s ease;
+  flex-shrink: 0;
+}
+
+.ft-col-link:hover {
+  color: #fff8f2;
+}
+.ft-col-link:hover::before {
+  width: 10px;
+  margin-right: 8px;
+}
+
+/* Small status badge */
+.ft-badge {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(200, 90, 0, 0.1);
+  border: 1px solid rgba(200, 90, 0, 0.26);
+  color: #c85a00;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 7px;
+  flex-shrink: 0;
+}
+
+/* ── Bottom bar ── */
+.ft-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 24px;
+}
+
+.ft-copy {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 235, 210, 0.22);
+}
+
+.ft-copy strong {
+  color: rgba(200, 90, 0, 0.55);
+  font-weight: 700;
+}
+
+.ft-legal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ft-legal-link {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 235, 210, 0.22);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ft-legal-link:hover {
+  color: rgba(255, 235, 210, 0.52);
+}
+
+.ft-legal-sep {
+  color: rgba(200, 90, 0, 0.3);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .ft-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .ft-brand {
+    grid-column: 1 / -1;
+  }
+  .ft-body {
+    padding: 40px 24px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .ft-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .ft-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ft-body {
+    padding: 32px 18px 0;
+  }
+  .ft-marquee-item {
+    padding: 0 14px;
+  }
+}

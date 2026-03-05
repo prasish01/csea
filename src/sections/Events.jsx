@@ -1,342 +1,914 @@
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
-import gsap from "gsap";
+// import { useRef, useEffect, useState } from "react";
+// import ImageCarousel from "../components/Imagecarousel";
+// import { latestEvent, pastEvents } from "../constants/index";
+// import {
+//   useEventsAnimations,
+//   animateModalOpen,
+//   onCardEnter,
+//   onCardLeave,
+// } from "../hooks/useEventsAnimations";
+// import "../styles/events.css";
 
-const latestEvent = {
-  id: 1,
-  title: "AUT Chess Open 2025",
-  date: "Saturday, 15 March 2025",
-  time: "10:00 AM – 5:00 PM",
-  location: "AUT City Campus, WG Building – Room 402",
-  banner: "/images/project-3.png",
-  description:
-    "Join us for our biggest tournament of the year! The AUT Chess Open 2025 is open to all students — from complete beginners to seasoned players. Compete for prizes, meet fellow chess enthusiasts, and enjoy a full day of competitive play.",
-  spotsLeft: 12,
-  totalSpots: 60,
-  tags: ["Tournament", "Open to All", "Prizes"],
-  registerLink: "#",
+// /* ─────────────────────────────────────────────────────────
+//    Sub-components
+// ───────────────────────────────────────────────────────── */
+
+// /** Splits text into word spans for GSAP clip-mask reveal */
+// const SplitWords = ({ text, accent = false }) => (
+//   <span className={`ev-split-line${accent ? " ev-heading-accent" : ""}`}>
+//     {text.split(" ").map((word, i) => (
+//       <span key={i} className="word-clip">
+//         <span className="word-inner">{word}</span>
+//       </span>
+//     ))}
+//   </span>
+// );
+
+// /** Semi-transparent tag pill overlaid on images */
+// const Tag = ({ children }) => <span className="ev-tag">{children}</span>;
+
+// /** Single meta row (date / time / location) */
+// const MetaRow = ({ icon, value }) => (
+//   <div className="ev-meta-row">
+//     <div className="ev-meta-icon">{icon}</div>
+//     <span>{value}</span>
+//   </div>
+// );
+
+// /** Orange highlight pill used in past event cards and modal */
+// const Pill = ({ children }) => <span className="ev-pill">{children}</span>;
+
+// /* ─────────────────────────────────────────────────────────
+//    Past Event Card
+// ───────────────────────────────────────────────────────── */
+// const PastEventCard = ({ event, index, cardRef, onClick }) => (
+//   <article
+//     ref={cardRef}
+//     className="ev-past-card"
+//     onClick={onClick}
+//     onMouseEnter={(e) => onCardEnter(e.currentTarget)}
+//     onMouseLeave={(e) => onCardLeave(e.currentTarget)}
+//   >
+//     {/* Image */}
+//     <div className="ev-card-img-wrap" onClick={(e) => e.stopPropagation()}>
+//       <ImageCarousel images={event.images} alt={event.title} />
+//       <span className="ev-card-index" aria-hidden="true">
+//         {String(index + 1).padStart(2, "0")}
+//       </span>
+//     </div>
+
+//     {/* Body */}
+//     <div className="ev-card-body">
+//       <div className="ev-card-meta">
+//         <span className="ev-card-date">{event.date}</span>
+//         <span className="ev-card-location">📍 {event.location}</span>
+//       </div>
+//       <h4 className="ev-card-title ev-serif">{event.title}</h4>
+//       <p className="ev-card-summary">{event.summary}</p>
+//       <div className="ev-pill-row">
+//         {event.highlights.map((h, i) => (
+//           <Pill key={i}>{h}</Pill>
+//         ))}
+//       </div>
+//     </div>
+
+//     {/* Footer */}
+//     <div className="ev-card-footer">
+//       <span className="ev-card-footer-label">View details</span>
+//       <span className="ev-card-footer-arrow" aria-hidden="true">
+//         →
+//       </span>
+//     </div>
+//   </article>
+// );
+
+// /* ─────────────────────────────────────────────────────────
+//    Past Event Modal
+// ───────────────────────────────────────────────────────── */
+// const EventModal = ({ event, overlayRef, modalRef, onClose }) => (
+//   <div
+//     ref={overlayRef}
+//     className="ev-modal-overlay"
+//     onClick={onClose}
+//     role="dialog"
+//     aria-modal="true"
+//     aria-label={event.title}
+//   >
+//     <div
+//       ref={modalRef}
+//       className="ev-modal"
+//       onClick={(e) => e.stopPropagation()}
+//     >
+//       {/* Carousel */}
+//       <div className="ev-modal-img-wrap">
+//         <ImageCarousel images={event.images} alt={event.title} />
+//         <button
+//           onClick={onClose}
+//           className="ev-modal-close"
+//           aria-label="Close modal"
+//         >
+//           ×
+//         </button>
+//       </div>
+
+//       {/* Content */}
+//       <div className="ev-modal-body">
+//         <div className="ev-pill-row">
+//           <Pill>📅 {event.date}</Pill>
+//           <Pill>📍 {event.location}</Pill>
+//         </div>
+//         <h3 className="ev-modal-title ev-serif">{event.title}</h3>
+//         <p className="ev-modal-summary">{event.summary}</p>
+//         <hr className="ev-modal-divider" />
+//         <p className="ev-section-label">Highlights</p>
+//         <div className="ev-pill-row" style={{ marginTop: "10px" }}>
+//           {event.highlights.map((h, i) => (
+//             <Pill key={i}>{h}</Pill>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// /* ─────────────────────────────────────────────────────────
+//    Main Events Section
+// ───────────────────────────────────────────────────────── */
+// const Events = () => {
+//   // ── Refs ──────────────────────────────────────────────
+//   const sectionRef = useRef(null);
+//   const heroRef = useRef(null);
+//   const heroImgRef = useRef(null);
+//   const spotsBarRef = useRef(null);
+//   const registerRef = useRef(null);
+//   const cardsRef = useRef([]);
+//   const modalRef = useRef(null);
+//   const overlayRef = useRef(null);
+
+//   // ── State ─────────────────────────────────────────────
+//   const [activeEvent, setActiveEvent] = useState(null);
+//   const [registered, setRegistered] = useState(false);
+
+//   // ── Animations ────────────────────────────────────────
+//   useEventsAnimations(
+//     { sectionRef, heroRef, heroImgRef, spotsBarRef, registerRef, cardsRef },
+//     registered,
+//   );
+
+//   // ── Modal side-effects ────────────────────────────────
+//   useEffect(() => {
+//     if (!activeEvent) {
+//       document.body.style.overflow = "";
+//       return;
+//     }
+//     document.body.style.overflow = "hidden";
+//     animateModalOpen(overlayRef.current, modalRef.current);
+//   }, [activeEvent]);
+
+//   useEffect(() => {
+//     const handleEsc = (e) => {
+//       if (e.key === "Escape") setActiveEvent(null);
+//     };
+//     window.addEventListener("keydown", handleEsc);
+//     return () => window.removeEventListener("keydown", handleEsc);
+//   }, []);
+
+//   // ── Derived values ────────────────────────────────────
+//   const spotsPercent = Math.round(
+//     ((latestEvent.totalSpots - latestEvent.spotsLeft) /
+//       latestEvent.totalSpots) *
+//       100,
+//   );
+
+//   const metaItems = [
+//     { icon: "📅", value: latestEvent.date },
+//     { icon: "🕙", value: latestEvent.time },
+//     { icon: "📍", value: latestEvent.location },
+//   ];
+
+//   // ─────────────────────────────────────────────────────
+//   return (
+//     <section ref={sectionRef} className="ev-page mt-12">
+//       {/* ══ PAGE HEADER ══ */}
+//       <header className="ev-header ">
+//         <div className="ev-header-inner ">
+//           <div>
+//             <p className="ev-section-label ev-label-anim">AUTCSEA</p>
+//             <h1 className="ev-heading ev-serif">
+//               <SplitWords text="Events &" />
+//               <SplitWords text="Happenings" accent />
+//             </h1>
+//           </div>
+
+//           <p className="ev-desc ev-desc-anim">
+//             From beginner workshops to competitive tournaments — everything
+//             happening at AUT's Computer Science &amp; Engineering Association.
+//           </p>
+//         </div>
+
+//         <div className="ev-header-divider ev-line-anim" />
+//       </header>
+
+//       <div className="ev-wrap">
+//         {/* ══ UPCOMING EVENT ══ */}
+//         <section className="ev-upcoming-section" aria-label="Upcoming event">
+//           <div className="ev-upcoming-label">
+//             <span className="ev-pulse-dot" aria-hidden="true" />
+//             <span className="ev-section-label">Upcoming Event</span>
+//           </div>
+
+//           <div ref={heroRef} className="ev-hero-card">
+//             {/* Image side with parallax wrapper */}
+//             <div className="ev-hero-img-side">
+//               <div ref={heroImgRef} className="ev-hero-parallax-wrap">
+//                 <ImageCarousel
+//                   images={latestEvent.images}
+//                   alt={latestEvent.title}
+//                 />
+//               </div>
+//               <div className="ev-hero-tags">
+//                 {latestEvent.tags.map((tag, i) => (
+//                   <Tag key={i}>{tag}</Tag>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Info side */}
+//             <div className="ev-hero-info">
+//               <div>
+//                 <h2 className="ev-hero-title ev-serif">{latestEvent.title}</h2>
+//                 <p className="ev-hero-desc">{latestEvent.description}</p>
+
+//                 <div className="ev-meta-list">
+//                   {metaItems.map(({ icon, value }) => (
+//                     <MetaRow key={value} icon={icon} value={value} />
+//                   ))}
+//                 </div>
+
+//                 {/* Capacity bar */}
+//                 <div className="ev-spots-wrap">
+//                   <div className="ev-spots-labels">
+//                     <span className="ev-spots-count">
+//                       {latestEvent.totalSpots - latestEvent.spotsLeft} /{" "}
+//                       {latestEvent.totalSpots} registered
+//                     </span>
+//                     <span className="ev-spots-left">
+//                       {latestEvent.spotsLeft} spots left
+//                     </span>
+//                   </div>
+//                   <div className="ev-bar-track">
+//                     <div
+//                       ref={spotsBarRef}
+//                       className="ev-bar-fill"
+//                       style={{ width: `${spotsPercent}%` }}
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* CTA */}
+//               {registered ? (
+//                 <div className="ev-registered-msg">
+//                   ✓ You're registered! See you there.
+//                 </div>
+//               ) : (
+//                 <button
+//                   ref={registerRef}
+//                   className="ev-register-btn"
+//                   onClick={() => setRegistered(true)}
+//                 >
+//                   Reserve Your Spot →
+//                 </button>
+//               )}
+//             </div>
+//           </div>
+//         </section>
+
+//         {/* ══ PAST EVENTS ══ */}
+//         <section aria-label="Past events">
+//           <div className="ev-past-header">
+//             <div className="ev-past-header-left">
+//               <span className="ev-section-label ev-past-label-anim">
+//                 Past Events
+//               </span>
+//               <div className="ev-accent-line ev-line-anim" aria-hidden="true" />
+//             </div>
+//             <span className="ev-count-badge">{pastEvents.length} events</span>
+//           </div>
+
+//           <div className="ev-past-grid">
+//             {pastEvents.map((event, idx) => (
+//               <PastEventCard
+//                 key={event.id}
+//                 event={event}
+//                 index={idx}
+//                 cardRef={(el) => (cardsRef.current[idx] = el)}
+//                 onClick={() => setActiveEvent(event)}
+//               />
+//             ))}
+//           </div>
+//         </section>
+//       </div>
+
+//       {/* ══ MODAL ══ */}
+//       {activeEvent && (
+//         <EventModal
+//           event={activeEvent}
+//           overlayRef={overlayRef}
+//           modalRef={modalRef}
+//           onClose={() => setActiveEvent(null)}
+//         />
+//       )}
+//     </section>
+//   );
+// };
+
+// export default Events;
+
+import { useRef, useEffect, useState, useLayoutEffect } from "react";
+import ImageCarousel from "../components/Imagecarousel";
+import { latestEvent, pastEvents } from "../constants/index";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "../styles/events.css";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ─────────────────────────────────────────────────────────
+   Sub-components
+───────────────────────────────────────────────────────── */
+
+const SplitWords = ({ text, accent = false }) => (
+  <span className={`ev-split-line${accent ? " ev-heading-accent" : ""}`}>
+    {text.split(" ").map((word, i) => (
+      <span key={i} className="word-clip">
+        <span className="word-inner">{word}</span>
+      </span>
+    ))}
+  </span>
+);
+
+const Tag = ({ children }) => <span className="ev-tag">{children}</span>;
+
+const MetaRow = ({ icon, value }) => (
+  <div className="ev-meta-row">
+    <div className="ev-meta-icon">{icon}</div>
+    <span>{value}</span>
+  </div>
+);
+
+const Pill = ({ children }) => <span className="ev-pill">{children}</span>;
+
+/* ─────────────────────────────────────────────────────────
+   3D Tilt helpers
+───────────────────────────────────────────────────────── */
+const applyTilt = (el, e) => {
+  const rect = el.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  const rotateX = ((y - cy) / cy) * -6;
+  const rotateY = ((x - cx) / cx) * 6;
+  gsap.to(el, {
+    rotateX,
+    rotateY,
+    transformPerspective: 1000,
+    ease: "power2.out",
+    duration: 0.4,
+  });
 };
 
-const pastEvents = [
-  {
-    id: 2,
-    title: "End-of-Year Chess Blitz",
-    date: "8 November 2024",
-    location: "WG Building – Room 301",
-    banner: "/images/project-2.png",
-    summary:
-      "A fast-paced blitz tournament wrapping up Semester 2. 38 players competed across 7 rapid rounds.",
-    highlights: ["38 participants", "7 rounds", "3 prizes awarded"],
-  },
-  {
-    id: 3,
-    title: "Beginners Workshop Series",
-    date: "April – May 2024",
-    location: "Online (Zoom)",
-    banner: "/images/project-3.png",
-    summary:
-      "A four-session online workshop introducing chess fundamentals to new students. Over 50 people attended at least one session.",
-    highlights: ["4 sessions", "50+ attendees", "Free to join"],
-  },
-  {
-    id: 4,
-    title: "Inter-Club Friendly Match",
-    date: "20 August 2024",
-    location: "AUT South Campus",
-    banner: "/images/project-2.png",
-    summary:
-      "AUTCSEA faced off against the UoA Chess Club in a friendly inter-university match. A great day of chess and camaraderie.",
-    highlights: ["2 clubs", "20 boards", "Friendly format"],
-  },
+const resetTilt = (el) => {
+  gsap.to(el, {
+    rotateX: 0,
+    rotateY: 0,
+    ease: "elastic.out(1, 0.4)",
+    duration: 0.8,
+  });
+};
+
+/* ─────────────────────────────────────────────────────────
+   Past Event Card
+───────────────────────────────────────────────────────── */
+const PastEventCard = ({ event, index, cardRef, onClick }) => (
+  <article
+    ref={cardRef}
+    className="ev-past-card"
+    onClick={onClick}
+    onMouseMove={(e) => applyTilt(e.currentTarget, e)}
+    onMouseLeave={(e) => resetTilt(e.currentTarget)}
+  >
+    <div className="ev-card-img-wrap" onClick={(e) => e.stopPropagation()}>
+      <ImageCarousel images={event.images} alt={event.title} />
+      <span className="ev-card-index" aria-hidden="true">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+    </div>
+
+    <div className="ev-card-body">
+      <div className="ev-card-meta">
+        <span className="ev-card-date">{event.date}</span>
+        <span className="ev-card-location">📍 {event.location}</span>
+      </div>
+      <h4 className="ev-card-title ev-serif">{event.title}</h4>
+      <p className="ev-card-summary">{event.summary}</p>
+      <div className="ev-pill-row">
+        {event.highlights.map((h, i) => (
+          <Pill key={i}>{h}</Pill>
+        ))}
+      </div>
+    </div>
+
+    <div className="ev-card-footer">
+      <span className="ev-card-footer-label">View details</span>
+      <span className="ev-card-footer-arrow" aria-hidden="true">
+        →
+      </span>
+    </div>
+  </article>
+);
+
+/* ─────────────────────────────────────────────────────────
+   Event Modal
+───────────────────────────────────────────────────────── */
+const EventModal = ({ event, overlayRef, modalRef, onClose }) => (
+  <div
+    ref={overlayRef}
+    className="ev-modal-overlay"
+    onClick={onClose}
+    role="dialog"
+    aria-modal="true"
+    aria-label={event.title}
+  >
+    <div
+      ref={modalRef}
+      className="ev-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="ev-modal-img-wrap">
+        <ImageCarousel images={event.images} alt={event.title} />
+        <button
+          onClick={onClose}
+          className="ev-modal-close"
+          aria-label="Close modal"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="ev-modal-body">
+        <div className="ev-pill-row">
+          <Pill>📅 {event.date}</Pill>
+          <Pill>📍 {event.location}</Pill>
+        </div>
+        <h3 className="ev-modal-title ev-serif">{event.title}</h3>
+        <p className="ev-modal-summary">{event.summary}</p>
+        <hr className="ev-modal-divider" />
+        <p className="ev-section-label">Highlights</p>
+        <div className="ev-pill-row" style={{ marginTop: "10px" }}>
+          {event.highlights.map((h, i) => (
+            <Pill key={i}>{h}</Pill>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+/* ─────────────────────────────────────────────────────────
+   Ticker strip data
+───────────────────────────────────────────────────────── */
+const TICKER_ITEMS = [
+  "Upcoming Events",
+  "Hackathons",
+  "Industry Tours",
+  "Workshops",
+  "Networking",
+  "Competitions",
+  "Coding Challenges",
+  "Club Updates",
 ];
 
-/* =======================
-   Component
-   ======================= */
-
-const EventsPage = () => {
+/* ─────────────────────────────────────────────────────────
+   Main Events Section
+───────────────────────────────────────────────────────── */
+const Events = () => {
+  // ── Refs ──────────────────────────────────────────────
   const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const heroCardRef = useRef(null);
+  const heroImgRef = useRef(null);
+  const spotsBarRef = useRef(null);
+  const registerRef = useRef(null);
+  const cardsRef = useRef([]);
   const modalRef = useRef(null);
   const overlayRef = useRef(null);
+  const cursorGlowRef = useRef(null);
 
+  // ── State ─────────────────────────────────────────────
   const [activeEvent, setActiveEvent] = useState(null);
   const [registered, setRegistered] = useState(false);
 
-  /* Page entrance animation */
+  // ── Cursor glow tracker ─────────────────────────────
+  useEffect(() => {
+    const glow = cursorGlowRef.current;
+    if (!glow) return;
+    const move = (e) => {
+      gsap.to(glow, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  // ── Entrance + scroll animations ────────────────────
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".fade-up", {
-        y: 40,
-        opacity: 0,
-        stagger: 0.15,
-        duration: 0.8,
+      // ── Heading word clip reveal ──
+      gsap.to(".word-inner", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
+        y: "0%",
+        duration: 0.9,
+        stagger: 0.07,
+        ease: "power4.out",
+        delay: 0.1,
+      });
+
+      gsap.to(".ev-label-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 88%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
         ease: "power2.out",
+      });
+
+      gsap.to(".ev-desc-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: "power3.out",
+        delay: 0.2,
+      });
+
+      gsap.to(".ev-line-anim", {
+        scrollTrigger: { trigger: headerRef.current, start: "top 82%" },
+        scaleX: 1,
+        duration: 1.0,
+        ease: "expo.out",
+        delay: 0.4,
+      });
+
+      // ── Counter bar count-up ──
+      const counters = document.querySelectorAll(
+        ".ev-counter-val [data-count]",
+      );
+      counters.forEach((el) => {
+        const target = parseInt(el.dataset.count, 10);
+        gsap.from(
+          { val: 0 },
+          {
+            scrollTrigger: { trigger: ".ev-counter-bar", start: "top 90%" },
+            val: target,
+            duration: 1.6,
+            ease: "power2.out",
+            onUpdate() {
+              el.textContent = Math.round(this.targets()[0].val);
+            },
+          },
+        );
+      });
+
+      // ── Hero card float in ──
+      gsap.to(heroCardRef.current, {
+        scrollTrigger: { trigger: heroCardRef.current, start: "top 80%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        delay: 0.15,
+      });
+
+      // ── Hero parallax on scroll ──
+      gsap.to(heroImgRef.current, {
+        scrollTrigger: {
+          trigger: heroCardRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+        y: -40,
+        ease: "none",
+      });
+
+      // ── Spots bar width animate ──
+      const spotsPercent = Math.round(
+        ((latestEvent.totalSpots - latestEvent.spotsLeft) /
+          latestEvent.totalSpots) *
+          100,
+      );
+      if (spotsBarRef.current) {
+        gsap.to(spotsBarRef.current, {
+          scrollTrigger: { trigger: spotsBarRef.current, start: "top 90%" },
+          width: `${spotsPercent}%`,
+          duration: 1.4,
+          ease: "power2.out",
+          delay: 0.3,
+        });
+      }
+
+      // ── Register button float in ──
+      gsap.from(registerRef.current, {
+        scrollTrigger: { trigger: registerRef.current, start: "top 92%" },
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.6,
+        ease: "back.out(2)",
+        delay: 0.5,
+      });
+
+      // ── Past section label ──
+      gsap.to(".ev-past-label-anim", {
+        scrollTrigger: { trigger: ".ev-past-header", start: "top 88%" },
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+
+      // ── Past event cards cascade in ──
+      cardsRef.current.filter(Boolean).forEach((card, i) => {
+        gsap.to(card, {
+          scrollTrigger: { trigger: card, start: "top 88%" },
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          ease: "power3.out",
+          delay: i * 0.08,
+        });
       });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  /* Modal animation */
+  // ── Modal effects ────────────────────────────────────
   useEffect(() => {
-    if (activeEvent) {
-      document.body.style.overflow = "hidden";
-      gsap.fromTo(
-        overlayRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3 },
-      );
-      gsap.fromTo(
-        modalRef.current,
-        { y: 40, scale: 0.96, opacity: 0 },
-        { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" },
-      );
-    } else {
-      document.body.style.overflow = "auto";
+    if (!activeEvent) {
+      document.body.style.overflow = "";
+      return;
     }
+    document.body.style.overflow = "hidden";
+    // Animate overlay + modal
+    gsap.to(overlayRef.current, {
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+    gsap.to(modalRef.current, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.45,
+      ease: "back.out(1.4)",
+    });
   }, [activeEvent]);
 
-  /* ESC to close modal */
+  const handleModalClose = () => {
+    gsap.to(overlayRef.current, {
+      opacity: 0,
+      duration: 0.2,
+      ease: "power2.in",
+    });
+    gsap.to(modalRef.current, {
+      opacity: 0,
+      scale: 0.94,
+      y: 12,
+      duration: 0.25,
+      ease: "power2.in",
+      onComplete: () => setActiveEvent(null),
+    });
+  };
+
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === "Escape") setActiveEvent(null);
+      if (e.key === "Escape") handleModalClose();
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
+  }, [activeEvent]);
 
-  const spotsPercent = Math.round(
-    ((latestEvent.totalSpots - latestEvent.spotsLeft) /
-      latestEvent.totalSpots) *
-      100,
-  );
+  // ── Magnetic register button ─────────────────────────
+  const handleRegisterMove = (e) => {
+    const btn = registerRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    gsap.to(btn, {
+      x: x * 0.25,
+      y: y * 0.25,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  };
+
+  const handleRegisterLeave = () => {
+    gsap.to(registerRef.current, {
+      x: 0,
+      y: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.4)",
+    });
+  };
+
+  const metaItems = [
+    { icon: "📅", value: latestEvent.date },
+    { icon: "🕙", value: latestEvent.time },
+    { icon: "📍", value: latestEvent.location },
+  ];
+
+  const doubledTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <section ref={sectionRef} className="bg-p4 py-28 max-md:py-20">
-      <div className="container mx-auto px-6">
-        {/* ── Header Banner ── */}
-        <div className="relative mb-12">
-          <div className="w-full h-64 bg-p1 rounded-2xl" />
-          <h2 className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">
-            Events at AUTCSEA
-          </h2>
+    <section ref={sectionRef} className="ev-page mt-12">
+      {/* Cursor glow */}
+      <div ref={cursorGlowRef} className="ev-cursor-glow" aria-hidden="true" />
+
+      {/* ══ TICKER STRIP ══ */}
+      <div className="ev-ticker" aria-hidden="true">
+        <div className="ev-ticker-track">
+          {doubledTicker.map((item, i) => (
+            <span key={i} className="ev-ticker-item">
+              <span className="ev-ticker-dot" />
+              {item}
+            </span>
+          ))}
         </div>
+      </div>
 
-        {/* ── Intro ── */}
-        <p className="fade-up text-center text-p2 max-w-3xl mx-auto mb-16">
-          From beginner workshops to competitive tournaments — stay in the loop
-          with everything happening at the AUT Computer Science & Engineering
-          Association.
-        </p>
+      {/* ══ PAGE HEADER ══ */}
+      <header ref={headerRef} className="ev-header">
+        <div className="ev-header-inner">
+          <div>
+            <p className="ev-section-label ev-label-anim">AUTCSEA</p>
+            <h1 className="ev-heading ev-serif">
+              <SplitWords text="Events &" />
+              <SplitWords text="Happenings" accent />
+            </h1>
+          </div>
+          <p className="ev-desc ev-desc-anim">
+            From beginner workshops to competitive tournaments — everything
+            happening at AUT's Computer Science &amp; Engineering Association.
+          </p>
+        </div>
+        <div className="ev-header-divider ev-line-anim" />
+      </header>
 
-        {/* ══════════════════════════════
-            LATEST EVENT
-        ══════════════════════════════ */}
-        <div className="fade-up mb-24">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
-            <h3 className="text-p1 text-xl font-semibold uppercase tracking-widest text-sm">
-              Upcoming Event
-            </h3>
+      {/* ══ COUNTER BAR ══ */}
+      <div className="ev-counter-bar">
+        {[
+          { count: pastEvents.length, suffix: "", label: "Past Events" },
+          {
+            count: latestEvent.totalSpots - latestEvent.spotsLeft,
+            suffix: "+",
+            label: "Registered",
+          },
+          { count: latestEvent.spotsLeft, suffix: "", label: "Spots Left" },
+          { count: 2025, suffix: "", label: "Season" },
+        ].map(({ count, suffix, label }) => (
+          <div key={label} className="ev-counter-item">
+            <span className="ev-counter-val">
+              <span data-count={count}>{count}</span>
+              <span>{suffix}</span>
+            </span>
+            <span className="ev-counter-label">{label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="ev-wrap">
+        {/* ══ UPCOMING EVENT ══ */}
+        <section className="ev-upcoming-section" aria-label="Upcoming event">
+          <div className="ev-upcoming-label">
+            <span className="ev-pulse-dot" aria-hidden="true" />
+            <span className="ev-section-label">Upcoming Event</span>
           </div>
 
-          <div className="bg-[#fcc591] rounded-3xl overflow-hidden shadow-lg grid grid-cols-2 max-lg:grid-cols-1">
-            {/* Image */}
-            <div className="relative h-full min-h-[320px] max-lg:min-h-[240px]">
-              <img
-                src={latestEvent.banner}
-                alt={latestEvent.title}
-                className="w-full h-full object-cover"
-              />
-              {/* Tags */}
-              <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          <div
+            ref={heroCardRef}
+            className="ev-hero-card"
+            onMouseMove={(e) => applyTilt(e.currentTarget, e)}
+            onMouseLeave={(e) => resetTilt(e.currentTarget)}
+          >
+            {/* Image side */}
+            <div className="ev-hero-img-side">
+              <div ref={heroImgRef} className="ev-hero-parallax-wrap">
+                <ImageCarousel
+                  images={latestEvent.images}
+                  alt={latestEvent.title}
+                />
+              </div>
+              <div className="ev-hero-tags">
                 {latestEvent.tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="bg-p1 text-white text-xs px-3 py-1 rounded-full font-medium"
-                  >
-                    {tag}
-                  </span>
+                  <Tag key={i}>{tag}</Tag>
                 ))}
               </div>
             </div>
 
-            {/* Info */}
-            <div className="p-10 max-md:p-6 flex flex-col justify-between">
+            {/* Info side */}
+            <div className="ev-hero-info">
               <div>
-                <h3 className="text-p1 text-3xl font-bold mb-4">
-                  {latestEvent.title}
-                </h3>
-                <p className="text-p5 mb-6 leading-relaxed">
-                  {latestEvent.description}
-                </p>
+                <h2 className="ev-hero-title ev-serif">{latestEvent.title}</h2>
+                <p className="ev-hero-desc">{latestEvent.description}</p>
 
-                {/* Meta */}
-                <div className="space-y-2 mb-8 text-p2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span>📅</span>
-                    <span>{latestEvent.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>🕙</span>
-                    <span>{latestEvent.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>📍</span>
-                    <span>{latestEvent.location}</span>
-                  </div>
+                <div className="ev-meta-list">
+                  {metaItems.map(({ icon, value }) => (
+                    <MetaRow key={value} icon={icon} value={value} />
+                  ))}
                 </div>
 
-                {/* Spots progress */}
-                <div className="mb-8">
-                  <div className="flex justify-between text-xs text-p2 mb-1">
-                    <span>
-                      {latestEvent.totalSpots - latestEvent.spotsLeft}{" "}
-                      registered
+                <div className="ev-spots-wrap">
+                  <div className="ev-spots-labels">
+                    <span className="ev-spots-count">
+                      {latestEvent.totalSpots - latestEvent.spotsLeft} /{" "}
+                      {latestEvent.totalSpots} registered
                     </span>
-                    <span>{latestEvent.spotsLeft} spots left</span>
+                    <span className="ev-spots-left">
+                      {latestEvent.spotsLeft} spots left
+                    </span>
                   </div>
-                  <div className="w-full h-2 bg-p4 rounded-full overflow-hidden">
+                  <div className="ev-bar-track">
                     <div
-                      className="h-full bg-p1 rounded-full transition-all duration-700"
-                      style={{ width: `${spotsPercent}%` }}
+                      ref={spotsBarRef}
+                      className="ev-bar-fill"
+                      style={{ width: "0%" }}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Register Button */}
               {registered ? (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-2xl text-center font-semibold">
+                <div className="ev-registered-msg">
                   ✓ You're registered! See you there.
                 </div>
               ) : (
                 <button
+                  ref={registerRef}
+                  className="ev-register-btn"
                   onClick={() => setRegistered(true)}
-                  className="bg-p1 text-white px-8 py-3 rounded-2xl font-semibold text-lg hover:opacity-90 active:scale-95 transition-all duration-200 w-full"
+                  onMouseMove={handleRegisterMove}
+                  onMouseLeave={handleRegisterLeave}
                 >
-                  Register Now →
+                  Reserve Your Spot →
                 </button>
               )}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* ══════════════════════════════
-            PAST EVENTS
-        ══════════════════════════════ */}
-        <div className="fade-up">
-          <h3 className="text-p1 text-xl font-semibold uppercase tracking-widest text-sm mb-6">
-            Past Events
-          </h3>
+        {/* ══ PAST EVENTS ══ */}
+        <section aria-label="Past events">
+          <div className="ev-past-header">
+            <div className="ev-past-header-left">
+              <span className="ev-section-label ev-past-label-anim">
+                Past Events
+              </span>
+              <div className="ev-accent-line ev-line-anim" aria-hidden="true" />
+            </div>
+            <span className="ev-count-badge">{pastEvents.length} events</span>
+          </div>
 
-          <div className="grid grid-cols-3 gap-8 max-lg:grid-cols-2 max-md:grid-cols-1">
-            {pastEvents.map((event) => (
-              <div
+          <div className="ev-past-grid">
+            {pastEvents.map((event, idx) => (
+              <PastEventCard
                 key={event.id}
+                event={event}
+                index={idx}
+                cardRef={(el) => (cardsRef.current[idx] = el)}
                 onClick={() => setActiveEvent(event)}
-                className="cursor-pointer bg-[#fcc591] rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <div className="relative">
-                  <img
-                    src={event.banner}
-                    alt={event.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-                    <span className="text-white font-semibold text-sm">
-                      View Details
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <p className="text-xs text-p2 mb-1 font-medium">
-                    {event.date}
-                  </p>
-                  <h4 className="text-p1 text-xl font-semibold mb-2">
-                    {event.title}
-                  </h4>
-                  <p className="text-p5 text-sm mb-4 line-clamp-2">
-                    {event.summary}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {event.highlights.map((h, i) => (
-                      <span
-                        key={i}
-                        className="bg-p2 text-white px-3 py-1 rounded-full text-xs"
-                      >
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              />
             ))}
           </div>
-        </div>
+        </section>
       </div>
 
-      {/* ══════════════════════════════
-          PAST EVENT MODAL
-      ══════════════════════════════ */}
+      {/* ══ MODAL ══ */}
       {activeEvent && (
-        <div
-          ref={overlayRef}
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-6"
-          onClick={() => setActiveEvent(null)}
-        >
-          <div
-            ref={modalRef}
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-3xl w-full bg-p4 rounded-3xl overflow-hidden"
-          >
-            {/* Close */}
-            <button
-              onClick={() => setActiveEvent(null)}
-              className="absolute top-4 right-4 z-10 text-white text-xl"
-            >
-              ✕
-            </button>
-
-            {/* Image */}
-            <div className="w-full h-64 bg-p3 flex items-center justify-center">
-              <img
-                src={activeEvent.banner}
-                alt={activeEvent.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Content */}
-            <div className="p-10 max-md:p-6">
-              <p className="text-xs text-p2 mb-1 font-medium uppercase tracking-wide">
-                {activeEvent.date} · {activeEvent.location}
-              </p>
-              <h3 className="text-3xl font-bold text-p1 mb-4">
-                {activeEvent.title}
-              </h3>
-              <p className="text-p2 mb-8">{activeEvent.summary}</p>
-
-              <h4 className="text-lg font-semibold text-p1 mb-3">
-                Event Highlights
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {activeEvent.highlights.map((h, i) => (
-                  <span
-                    key={i}
-                    className="bg-p2 text-white px-4 py-1 rounded-full text-sm"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <EventModal
+          event={activeEvent}
+          overlayRef={overlayRef}
+          modalRef={modalRef}
+          onClose={handleModalClose}
+        />
       )}
     </section>
   );
 };
 
-export default EventsPage;
+export default Events;

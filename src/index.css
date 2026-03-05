@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body,
+html {
+  background: #080a0f;
+}
+
 @layer base {
   html {
     @apply bg-s5;
