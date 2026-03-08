@@ -8,9 +8,37 @@ import "../styles/project.css";
 gsap.registerPlugin(ScrollTrigger);
 
 /* ─────────────────────────────────────────────────────────
+   Coming Soon placeholder pool
+───────────────────────────────────────────────────────── */
+const COMING_SOON_POOL = [
+  {
+    id: "cs-1",
+    title: "Project Incoming",
+    shortDesc:
+      "Something exciting is being built by the team. Check back soon.",
+  },
+  {
+    id: "cs-2",
+    title: "Under Construction",
+    shortDesc: "Our next project is in early planning. Watch this space.",
+  },
+  {
+    id: "cs-3",
+    title: "Coming Soon",
+    shortDesc:
+      "Got an idea? Pitch it to the club — it could be our next build.",
+  },
+];
+
+// Always append a full row of coming soon cards after real projects
+const filledProjects = [
+  // ...projectsData, --- THIS IS INTENTIONAL, ADD IT AFTER MAKING PROJECTS ---
+  ...COMING_SOON_POOL.map((p) => ({ ...p, isComingSoon: true })),
+];
+
+/* ─────────────────────────────────────────────────────────
    Sub-components
 ───────────────────────────────────────────────────────── */
-
 const SplitWords = ({ text, accent = false }) => (
   <span className={`pr-split-line${accent ? " pr-heading-accent" : ""}`}>
     {text.split(" ").map((word, i) => (
@@ -29,10 +57,10 @@ const Pill = ({ children }) => <span className="pr-pill">{children}</span>;
 ───────────────────────────────────────────────────────── */
 const applyTilt = (el, e) => {
   const rect = el.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -6;
-  const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+  const rotateX =
+    ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -6;
+  const rotateY =
+    ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 6;
   gsap.to(el, {
     rotateX,
     rotateY,
@@ -42,14 +70,67 @@ const applyTilt = (el, e) => {
   });
 };
 
-const resetTilt = (el) => {
+const resetTilt = (el) =>
   gsap.to(el, {
     rotateX: 0,
     rotateY: 0,
     ease: "elastic.out(1, 0.4)",
     duration: 0.8,
   });
-};
+
+/* ─────────────────────────────────────────────────────────
+   Coming Soon Card
+───────────────────────────────────────────────────────── */
+const ComingSoonCard = ({ project, index, cardRef }) => (
+  <article
+    ref={cardRef}
+    className="pr-card pr-card-soon"
+    onMouseMove={(e) => applyTilt(e.currentTarget, e)}
+    onMouseLeave={(e) => resetTilt(e.currentTarget)}
+  >
+    {/* Placeholder image area */}
+    <div className="pr-card-img-wrap pr-soon-img">
+      <div className="pr-soon-grid" aria-hidden="true">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="pr-soon-grid-line"
+            style={{ animationDelay: `${i * 0.3}s` }}
+          />
+        ))}
+      </div>
+      <div className="pr-soon-orb" aria-hidden="true" />
+      <span className="pr-card-number" aria-hidden="true">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <span className="pr-soon-badge">
+        <span className="pr-soon-badge-dot" />
+        Coming Soon
+      </span>
+    </div>
+
+    <div className="pr-card-body">
+      <h3 className="pr-card-title pr-serif">{project.title}</h3>
+      <p className="pr-card-desc">{project.shortDesc}</p>
+      <div className="pr-tech-row">
+        <span className="pr-tech-chip pr-tech-chip-soon">TBD</span>
+      </div>
+    </div>
+
+    <div className="pr-card-footer">
+      <span className="pr-card-footer-label" style={{ opacity: 0.35 }}>
+        In development
+      </span>
+      <span
+        className="pr-card-footer-arrow"
+        style={{ opacity: 0.25 }}
+        aria-hidden="true"
+      >
+        ···
+      </span>
+    </div>
+  </article>
+);
 
 /* ─────────────────────────────────────────────────────────
    Project Card
@@ -124,7 +205,6 @@ const ProjectModal = ({ project, index, overlayRef, modalRef, onClose }) => (
           ×
         </button>
       </div>
-
       <div className="pr-modal-content">
         <p className="pr-modal-number pr-mono">
           Project {String(index + 1).padStart(2, "0")}
@@ -132,21 +212,18 @@ const ProjectModal = ({ project, index, overlayRef, modalRef, onClose }) => (
         <h3 className="pr-modal-title pr-serif">{project.title}</h3>
         <p className="pr-modal-overview">{project.overview}</p>
         <hr className="pr-modal-divider" />
-
         <p className="pr-modal-sub-label">Key Features</p>
         <ul className="pr-modal-features">
           {project.features.map((f) => (
             <li key={f}>{f}</li>
           ))}
         </ul>
-
         <p className="pr-modal-sub-label">Highlights</p>
         <div className="pr-pill-row">
           {project.highlights.map((h) => (
             <Pill key={h}>{h}</Pill>
           ))}
         </div>
-
         <p className="pr-modal-sub-label">Tech Stack</p>
         <div className="pr-tech-row" style={{ marginBottom: 0 }}>
           {project.techStack.map((tech) => (
@@ -159,7 +236,7 @@ const ProjectModal = ({ project, index, overlayRef, modalRef, onClose }) => (
 );
 
 /* ─────────────────────────────────────────────────────────
-   Ticker data
+   Ticker
 ───────────────────────────────────────────────────────── */
 const TICKER_ITEMS = [
   "Open Source",
@@ -189,31 +266,26 @@ const Projects = () => {
 
   const [activeProject, setActiveProject] = useState(null);
   const activeIndex = projectsData.findIndex((p) => p.id === activeProject?.id);
-
-  // Featured = first project
   const featured = projectsData[0];
-  const restProjects = projectsData.slice(1);
 
   // ── Cursor glow ──────────────────────────────────────
   useEffect(() => {
     const glow = cursorGlowRef.current;
     if (!glow) return;
-    const move = (e) => {
+    const move = (e) =>
       gsap.to(glow, {
         x: e.clientX,
         y: e.clientY,
         duration: 0.6,
         ease: "power2.out",
       });
-    };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, []);
 
-  // ── GSAP entrance + scroll animations ───────────────
+  // ── GSAP animations ──────────────────────────────────
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Heading word-clip reveal
       gsap.to(".pr-word-inner", {
         scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
         y: "0%",
@@ -222,7 +294,6 @@ const Projects = () => {
         ease: "power4.out",
         delay: 0.1,
       });
-
       gsap.to(".pr-label-anim", {
         scrollTrigger: { trigger: headerRef.current, start: "top 88%" },
         opacity: 1,
@@ -230,7 +301,6 @@ const Projects = () => {
         duration: 0.6,
         ease: "power2.out",
       });
-
       gsap.to(".pr-desc-anim", {
         scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
         opacity: 1,
@@ -239,7 +309,6 @@ const Projects = () => {
         ease: "power3.out",
         delay: 0.2,
       });
-
       gsap.to(".pr-line-anim", {
         scrollTrigger: { trigger: headerRef.current, start: "top 82%" },
         scaleX: 1,
@@ -247,8 +316,6 @@ const Projects = () => {
         ease: "expo.out",
         delay: 0.4,
       });
-
-      // Code decoration fade in
       gsap.to(".pr-code-deco", {
         scrollTrigger: { trigger: headerRef.current, start: "top 80%" },
         opacity: 1,
@@ -256,8 +323,6 @@ const Projects = () => {
         ease: "power2.out",
         delay: 0.6,
       });
-
-      // Stats count-up
       document.querySelectorAll(".pr-stat-item").forEach((el, i) => {
         gsap.to(el, {
           scrollTrigger: { trigger: ".pr-stats-bar", start: "top 90%" },
@@ -268,8 +333,6 @@ const Projects = () => {
           delay: i * 0.07,
         });
       });
-
-      // Featured card float in + parallax
       gsap.to(featuredRef.current, {
         scrollTrigger: { trigger: featuredRef.current, start: "top 82%" },
         opacity: 1,
@@ -278,7 +341,6 @@ const Projects = () => {
         ease: "power3.out",
         delay: 0.1,
       });
-
       gsap.to(featuredParallaxRef.current, {
         scrollTrigger: {
           trigger: featuredRef.current,
@@ -289,8 +351,6 @@ const Projects = () => {
         y: -40,
         ease: "none",
       });
-
-      // View button pop in
       gsap.from(viewBtnRef.current, {
         scrollTrigger: { trigger: viewBtnRef.current, start: "top 92%" },
         scale: 0.8,
@@ -299,8 +359,6 @@ const Projects = () => {
         ease: "back.out(2)",
         delay: 0.4,
       });
-
-      // Grid section label
       gsap.to(".pr-grid-label-anim", {
         scrollTrigger: { trigger: ".pr-grid-header", start: "top 90%" },
         opacity: 1,
@@ -308,8 +366,6 @@ const Projects = () => {
         duration: 0.6,
         ease: "power2.out",
       });
-
-      // Cards stagger cascade
       cardsRef.current.filter(Boolean).forEach((card, i) => {
         gsap.to(card, {
           scrollTrigger: { trigger: card, start: "top 88%" },
@@ -321,11 +377,10 @@ const Projects = () => {
         });
       });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
-  // ── Modal effects ────────────────────────────────────
+  // ── Modal ────────────────────────────────────────────
   useEffect(() => {
     if (!activeProject) {
       document.body.style.overflow = "";
@@ -364,50 +419,38 @@ const Projects = () => {
   };
 
   useEffect(() => {
-    const handleEsc = (e) => {
+    const h = (e) => {
       if (e.key === "Escape") handleModalClose();
     };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, [activeProject]);
 
-  // ── Magnetic view button ─────────────────────────────
+  // ── Magnetic button ───────────────────────────────────
   const handleBtnMove = (e) => {
     const btn = viewBtnRef.current;
     if (!btn) return;
     const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
     gsap.to(btn, {
-      x: x * 0.25,
-      y: y * 0.25,
+      x: (e.clientX - rect.left - rect.width / 2) * 0.25,
+      y: (e.clientY - rect.top - rect.height / 2) * 0.25,
       duration: 0.3,
       ease: "power2.out",
     });
   };
-
-  const handleBtnLeave = () => {
+  const handleBtnLeave = () =>
     gsap.to(viewBtnRef.current, {
       x: 0,
       y: 0,
       duration: 0.6,
       ease: "elastic.out(1, 0.4)",
     });
-  };
 
   const doubledTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
-
-  // Floating code snippet text
-  const codeSnippet = `const project = {
-  team: "AUTCSEA",
-  stack: ["React", "Node"],
-  year: 2025,
-  status: "building"
-};`;
+  const codeSnippet = `const project = {\n  team: "AUTCSEA",\n  stack: ["React", "Node"],\n  year: 2025,\n  status: "building"\n};`;
 
   return (
     <section ref={sectionRef} className="pr-page mt-12">
-      {/* Cursor glow */}
       <div ref={cursorGlowRef} className="pr-cursor-glow" aria-hidden="true" />
 
       {/* ══ TICKER ══ */}
@@ -424,11 +467,9 @@ const Projects = () => {
 
       {/* ══ HEADER ══ */}
       <header ref={headerRef} className="pr-header">
-        {/* Floating code deco */}
         <pre className="pr-code-deco" aria-hidden="true">
           {codeSnippet}
         </pre>
-
         <div className="pr-header-inner">
           <div>
             <p className="pr-section-label pr-label-anim">AUTCSEA</p>
@@ -448,13 +489,13 @@ const Projects = () => {
       {/* ══ STATS BAR ══ */}
       <div className="pr-stats-bar">
         {[
-          { val: projectsData.length, suffix: "", label: "Projects" },
+          { val: 1, suffix: "", label: "Projects" },
           {
             val: projectsData.reduce((acc, p) => acc + p.techStack.length, 0),
             suffix: "+",
             label: "Technologies",
           },
-          { val: 2025, suffix: "", label: "Season" },
+          { val: 2026, suffix: "", label: "Season" },
           { val: 100, suffix: "%", label: "Open Source" },
         ].map(({ val, suffix, label }) => (
           <div key={label} className="pr-stat-item">
@@ -486,7 +527,6 @@ const Projects = () => {
               onMouseLeave={(e) => resetTilt(e.currentTarget)}
               onClick={() => setActiveProject(featured)}
             >
-              {/* Image side */}
               <div className="pr-featured-img-side">
                 <div ref={featuredParallaxRef} className="pr-featured-parallax">
                   <ImageCarousel
@@ -502,14 +542,12 @@ const Projects = () => {
                 </div>
               </div>
 
-              {/* Info side */}
               <div className="pr-featured-info">
                 <div>
                   <h2 className="pr-featured-title pr-serif">
                     {featured.title}
                   </h2>
                   <p className="pr-featured-overview">{featured.overview}</p>
-
                   <div className="pr-featured-meta">
                     <div className="pr-featured-meta-row">
                       <div className="pr-meta-icon">🛠</div>
@@ -523,14 +561,12 @@ const Projects = () => {
                       <span>{featured.highlights[0]}</span>
                     </div>
                   </div>
-
                   <div className="pr-tech-row">
                     {featured.techStack.map((tech) => (
                       <TechChip key={tech} label={tech} />
                     ))}
                   </div>
                 </div>
-
                 <button
                   ref={viewBtnRef}
                   className="pr-view-btn"
@@ -563,16 +599,25 @@ const Projects = () => {
         </div>
 
         <div className="pr-grid">
-          {projectsData.map((project, idx) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={idx}
-              isLive={idx === 0}
-              cardRef={(el) => (cardsRef.current[idx] = el)}
-              onClick={() => setActiveProject(project)}
-            />
-          ))}
+          {filledProjects.map((project, idx) =>
+            project.isComingSoon ? (
+              <ComingSoonCard
+                key={project.id}
+                project={project}
+                index={idx}
+                cardRef={(el) => (cardsRef.current[idx] = el)}
+              />
+            ) : (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={idx}
+                isLive={idx === 0}
+                cardRef={(el) => (cardsRef.current[idx] = el)}
+                onClick={() => setActiveProject(project)}
+              />
+            ),
+          )}
         </div>
       </div>
 

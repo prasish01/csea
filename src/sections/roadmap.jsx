@@ -30,97 +30,111 @@ const events = [
     title: "Pub Quiz Night",
     week: "Week 2",
     type: "Social",
-    desc: "Test your trivia and CS knowledge in a relaxed, fun social setting. Teams welcome — all levels.",
+    desc: "Connect with students across STEM disciplines in a relaxed social setting. A great chance to meet new people and build friendships.",
     details: [
-      "CS & general knowledge rounds",
-      "Team-based format",
-      "Prizes for winners",
+      "Meet students from different STEM majors",
+      "Casual networking",
+      "Games and social activities",
     ],
     pos: { x: 42, y: 13 },
     tooltipBelow: false,
   },
   {
     id: 2,
-    title: "AllUni Hackathon",
-    week: "Week 2",
-    type: "Competition",
-    desc: "Compete across all Auckland universities. Build a project in 24 hours, pitch to judges, win prizes.",
+    title: "Internship 101",
+    week: "Week 3",
+    type: "Workshop",
+    desc: "Learn how to secure internships in the tech industry. Get practical advice on applications, timing, and preparing for the process.",
     details: [
-      "24-hour build sprint",
-      "Cross-university teams",
-      "Industry judges & prizes",
+      "How internship applications work",
+      "Tips for standing out",
+      "Q&A with experienced interns",
     ],
     pos: { x: 73, y: 13 },
     tooltipBelow: false,
   },
   {
     id: 3,
-    title: "Capture the Flag with EY",
-    week: "Week 3",
-    type: "Competition",
-    desc: "Hands-on cybersecurity CTF challenge run in partnership with Ernst & Young.",
+    title: "CV Workshop with ELAB",
+    week: "Week 4",
+    type: "Workshop",
+    desc: "Improve your CV with guidance from ELAB. Learn how to structure your resume and present your skills effectively..",
     details: [
-      "CTF challenge format",
-      "Sponsored by EY",
-      "Cybersecurity skills",
+      "CV structure and formatting",
+      "Tips for tech resumes",
+      "Live feedback opportunities",
     ],
     pos: { x: 85, y: 47 },
     tooltipBelow: true,
   },
   {
     id: 4,
-    title: "How to Land a Tech Role",
-    week: "Week 4",
+    title: "Interview Preparation",
+    week: "Week 5",
     type: "Workshop",
-    desc: "Panel discussion and workshop on CVs, portfolios, technical interviews, and breaking into the NZ tech industry.",
+    desc: "Prepare for technical and behavioural interviews with practical tips and mock scenarios.",
     details: [
-      "Industry speaker panel",
-      "Live CV & portfolio review",
-      "Interview prep tips",
+      "Common interview questions",
+      "Technical interview tips",
+      "How to present your projects",
     ],
     pos: { x: 52, y: 56 },
     tooltipBelow: true,
   },
   {
     id: 5,
-    title: "Fisher & Paykel Tour with IEEE",
+    title: "Pub Quiz with MAPS",
     week: "Week 6",
-    type: "Industry",
-    desc: "Behind-the-scenes tour of Fisher & Paykel's engineering facility in partnership with the IEEE student branch.",
+    type: "Social",
+    desc: "Join us for a fun pub quiz night hosted with MAPS. Test your knowledge and compete with friends.",
     details: [
-      "F&P engineering facility",
-      "Co-hosted with IEEE AUT",
-      "Industry networking",
+      "Team-based quiz format",
+      "General & tech trivia",
+      "Prizes for winning teams",
     ],
     pos: { x: 17, y: 56 },
     tooltipBelow: true,
   },
   {
     id: 6,
-    title: "Coding Competition with Sandfield",
-    week: "Midsem Break",
+    title: "ETL Pipeline Competition",
+    week: "Week 7",
     type: "Competition",
-    desc: "Industry-sponsored coding contest during the midsemester break. Compete for prizes and get noticed by Sandfield.",
+    desc: "Build and optimise an ETL pipeline in this hands-on data engineering challenge.",
     details: [
-      "Sponsored by Sandfield",
-      "Cash prizes available",
-      "Recruitment opportunity",
+      "Data engineering challenge",
+      "Build an ETL pipeline",
+      "Prizes for top performers",
     ],
-    pos: { x: 30, y: 84 },
+    pos: { x: 25, y: 84 },
     tooltipBelow: true,
   },
   {
     id: 7,
-    title: "End of Year Networking",
-    week: "Week 9",
-    type: "Networking",
-    desc: "Close out the year with industry professionals, alumni, and your peers. Celebrate what we built together.",
+    title: "Hackathon with CSI",
+    week: "Week 8",
+    type: "Competition",
+    desc: "Collaborate with fellow students to build innovative projects during an exciting hackathon event with CSI.",
     details: [
-      "Industry professionals",
-      "Alumni connections",
-      "Celebrate the year",
+      "Team-based hackathon",
+      "Build a project in limited time",
+      "Mentors and prizes",
     ],
-    pos: { x: 67, y: 84 },
+    pos: { x: 52, y: 84 },
+    tooltipBelow: true,
+  },
+  {
+    id: 8,
+    title: "API Development Workshop",
+    week: "Week 9",
+    type: "Workshop",
+    desc: "Learn how to design and build APIs used in modern web applications.",
+    details: [
+      "API fundamentals",
+      "Building REST APIs",
+      "Best practices for backend integration",
+    ],
+    pos: { x: 72, y: 84 },
     tooltipBelow: true,
   },
 ];
@@ -138,7 +152,9 @@ const PATH_D =
   "M 130 117 C 260 117 370 117 420 117 C 530 117 640 117 730 117 C 820 117 900 117 930 117 C 970 117 975 220 960 423 C 945 510 895 503 840 503 C 760 503 660 503 520 503 C 430 503 340 503 240 503 C 170 503 125 503 110 503 C 75 503 62 570 78 760 C 90 820 170 760 300 760 C 420 760 540 760 670 760";
 
 /* Approximate 0–1 progress along the path for each event */
-const EVENT_PROGRESS = [0.01, 0.165, 0.315, 0.42, 0.565, 0.675, 0.825, 0.995];
+const EVENT_PROGRESS = [
+  0.01, 0.165, 0.315, 0.42, 0.565, 0.675, 0.825, 0.971, 0.995,
+];
 
 /* ── SVG Icon set ── */
 const Icon = ({ type, size = 20 }) => {
@@ -406,7 +422,7 @@ const Roadmap = () => {
           <header ref={headingRef} className="rd-header">
             <div className="rd-header-left">
               <p className="rd-label rd-label-anim">
-                AUTCSEA · Semester 2, 2025
+                AUTCSEA · Semester 1, 2026
               </p>
               <h2 className="rd-heading rd-serif">
                 <SplitWords text="Event" />
@@ -439,10 +455,10 @@ const Roadmap = () => {
           {/* STAT BAR */}
           <div className="rd-stat-bar">
             {[
-              { val: "8", label: "Events" },
+              { val: "9", label: "Events" },
               { val: "4", label: "Event Types" },
-              { val: "S2", label: "Semester" },
-              { val: "2025", label: "Year" },
+              { val: "S1", label: "Semester" },
+              { val: "2026", label: "Year" },
             ].map(({ val, label }) => (
               <div key={label} className="rd-stat-item">
                 <span className="rd-stat-val rd-serif">{val}</span>

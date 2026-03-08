@@ -146,7 +146,6 @@
   display: block;
   overflow: hidden;
 }
-
 .ct-title-word {
   display: inline-block;
   transform: translateY(110%);
@@ -279,7 +278,6 @@
   max-width: 300px;
 }
 
-/* Info items */
 .ct-info-list {
   display: flex;
   flex-direction: column;
@@ -345,7 +343,6 @@
   margin: 0;
 }
 
-/* Social links */
 .ct-social-row {
   display: flex;
   gap: 8px;
@@ -382,7 +379,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────
-   RIGHT — form column
+   RIGHT — card column
 ───────────────────────────────────────────────────────── */
 .ct-form-col {
   opacity: 0;
@@ -401,7 +398,6 @@
   overflow: hidden;
 }
 
-/* Top accent line */
 .ct-form-card::before {
   content: "";
   position: absolute;
@@ -418,7 +414,6 @@
   border-radius: 20px 20px 0 0;
 }
 
-/* Subtle corner glow */
 .ct-form-card::after {
   content: "";
   position: absolute;
@@ -447,104 +442,7 @@
   line-height: 1.5;
 }
 
-/* ── Form fields ──────────────────────────────────────── */
-.ct-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.ct-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.ct-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ct-field-label {
-  font-family: var(--ct-mono);
-  font-size: 9px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ct-text-dim);
-  transition: color 0.2s;
-}
-
-.ct-field:focus-within .ct-field-label {
-  color: var(--ct-accent);
-}
-
-.ct-input,
-.ct-textarea,
-.ct-select {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid var(--ct-glass-border);
-  border-radius: 10px;
-  padding: 11px 14px;
-  font-family: var(--ct-body);
-  font-size: 13px;
-  color: var(--ct-text);
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-  transition:
-    border-color 0.25s,
-    box-shadow 0.25s,
-    background 0.25s;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.ct-input::placeholder,
-.ct-textarea::placeholder {
-  color: rgba(107, 118, 133, 0.45);
-}
-
-.ct-input:focus,
-.ct-textarea:focus,
-.ct-select:focus {
-  border-color: rgba(255, 77, 0, 0.38);
-  background: rgba(255, 77, 0, 0.02);
-  box-shadow: 0 0 0 3px rgba(255, 77, 0, 0.07);
-}
-
-.ct-textarea {
-  resize: none;
-  min-height: 96px;
-  line-height: 1.6;
-}
-
-/* Select wrapper for custom chevron */
-.ct-select-wrap {
-  position: relative;
-}
-
-.ct-select-wrap svg {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
-  color: var(--ct-text-dim);
-  pointer-events: none;
-}
-
-.ct-select {
-  padding-right: 36px;
-  cursor: pointer;
-}
-.ct-select option {
-  background: #090d14;
-  color: var(--ct-text);
-}
-
-/* ── Submit ───────────────────────────────────────────── */
+/* ── Submit button ─────────────────────────────────────── */
 .ct-submit-btn {
   position: relative;
   display: inline-flex;
@@ -567,13 +465,13 @@
     box-shadow 0.3s;
   box-shadow: 0 4px 24px rgba(255, 77, 0, 0.35);
   margin-top: 4px;
+  text-decoration: none;
 }
 
 .ct-submit-btn:hover {
   transform: scale(1.02) translateY(-2px);
   box-shadow: 0 8px 40px rgba(255, 77, 0, 0.5);
 }
-
 .ct-submit-btn:active {
   transform: scale(0.98);
 }
@@ -610,127 +508,6 @@
   height: 16px;
 }
 
-/* ── Success state ────────────────────────────────────── */
-.ct-success {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 48px 20px;
-  min-height: 300px;
-  gap: 12px;
-}
-
-.ct-success-check {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ct-accent-green);
-  margin-bottom: 8px;
-}
-
-.ct-success-check svg {
-  width: 24px;
-  height: 24px;
-}
-
-.ct-success-title {
-  font-family: var(--ct-serif);
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ct-text);
-  margin: 0;
-}
-
-.ct-success-msg {
-  font-size: 13px;
-  color: var(--ct-text-mid);
-  line-height: 1.7;
-  margin: 0;
-  max-width: 280px;
-}
-
-/* ─────────────────────────────────────────────────────────
-   SUCCESS OVERLAY — paper plane
-───────────────────────────────────────────────────────── */
-.ct-success-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(3, 5, 10, 0.96);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
-  opacity: 0;
-  pointer-events: none;
-  backdrop-filter: blur(24px);
-  transition: opacity 0.4s;
-}
-
-.ct-success-overlay.visible {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.ct-plane {
-  font-size: 64px;
-  margin-bottom: 24px;
-  display: block;
-}
-
-.ct-success-overlay-title {
-  font-family: var(--ct-serif);
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--ct-text);
-  margin: 0 0 10px;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.ct-success-overlay-msg {
-  font-size: 15px;
-  color: var(--ct-text-mid);
-  max-width: 360px;
-  line-height: 1.75;
-  margin: 0 0 28px;
-  opacity: 0;
-}
-
-.ct-success-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 24px;
-  border-radius: 100px;
-  background: var(--ct-glass);
-  border: 1px solid var(--ct-glass-border);
-  color: var(--ct-text-mid);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  opacity: 0;
-  font-family: var(--ct-body);
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-
-.ct-success-back:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--ct-text);
-}
-
 /* ─────────────────────────────────────────────────────────
    EASTER EGG HINT
 ───────────────────────────────────────────────────────── */
@@ -749,7 +526,6 @@
   transition: opacity 0.5s;
   white-space: nowrap;
 }
-
 .ct-easter-hint.peek {
   opacity: 1;
 }
@@ -794,9 +570,136 @@
   text-decoration: none;
   transition: opacity 0.2s;
 }
-
 .ct-footer-email:hover {
   opacity: 0.75;
+}
+
+/* ─────────────────────────────────────────────────────────
+   CONNECT PANEL  — replaces form
+───────────────────────────────────────────────────────── */
+
+/* Channel link list */
+.ct-connect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+/* Individual row */
+.ct-connect-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--ct-glass-border);
+  background: var(--ct-glass);
+  text-decoration: none;
+  transition:
+    background var(--ct-t),
+    border-color var(--ct-t),
+    transform var(--ct-t);
+  cursor: pointer;
+}
+
+.ct-connect-link:hover {
+  background: color-mix(in srgb, var(--cc, var(--ct-accent)) 8%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--cc, var(--ct-accent)) 40%,
+    transparent
+  );
+  transform: translateX(5px);
+}
+
+/* Coloured icon bubble */
+.ct-connect-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cc, var(--ct-accent)) 12%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--cc, var(--ct-accent)) 22%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cc, var(--ct-accent));
+  flex-shrink: 0;
+  transition:
+    background var(--ct-t),
+    border-color var(--ct-t);
+}
+
+.ct-connect-link:hover .ct-connect-icon {
+  background: color-mix(in srgb, var(--cc, var(--ct-accent)) 18%, transparent);
+}
+
+.ct-connect-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Text body */
+.ct-connect-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ct-connect-label {
+  font-family: var(--ct-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ct-text);
+}
+
+.ct-connect-sub {
+  font-size: 12px;
+  color: var(--ct-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CTA text — fades in on hover */
+.ct-connect-cta {
+  font-family: var(--ct-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cc, var(--ct-accent));
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ct-connect-link:hover .ct-connect-cta {
+  opacity: 1;
+}
+
+/* Join CTA block */
+.ct-connect-join {
+  border-top: 1px solid var(--ct-glass-border);
+  padding-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ct-connect-join-text {
+  font-size: 13px;
+  color: var(--ct-text-mid);
+  line-height: 1.7;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -820,9 +723,6 @@
 @media (max-width: 560px) {
   .ct-body {
     padding: 48px 20px 64px;
-  }
-  .ct-row {
-    grid-template-columns: 1fr;
   }
   .ct-form-card {
     padding: 28px 20px;

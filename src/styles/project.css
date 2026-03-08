@@ -1104,3 +1104,126 @@
     font-size: 48px;
   }
 }
+
+/* ─────────────────────────────────────────────────────────
+   COMING SOON CARD
+───────────────────────────────────────────────────────── */
+.pr-card-soon {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.pr-card-soon:hover {
+  border-color: rgba(59, 130, 246, 0.12);
+  box-shadow: none;
+  opacity: 0.75;
+}
+
+/* Placeholder image zone */
+.pr-soon-img {
+  background: var(--pr-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated grid lines */
+.pr-soon-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.pr-soon-grid-line {
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  animation: pr-soon-fade 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes pr-soon-fade {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+/* Pulsing centre orb */
+.pr-soon-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.18),
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  animation: pr-soon-orb-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pr-soon-orb-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+}
+
+/* Coming soon badge */
+.pr-soon-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  font-family: var(--pr-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: #93c5fd;
+  z-index: 3;
+}
+
+.pr-soon-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3b82f6;
+  animation: pr-blink 2s ease-in-out infinite;
+}
+
+@keyframes pr-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* Muted TBD chip */
+.pr-tech-chip-soon {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: var(--pr-text-dim) !important;
+  font-style: italic;
+}
+
+.pr-tech-chip-soon::before {
+  content: "" !important;
+}

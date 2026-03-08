@@ -1,48 +1,8 @@
 export const testimonials = [
   {
     id: "0",
-    name: "Kareena Kumar",
-    role: "President",
-    avatar: "/images/testimonials/kareena.png",
-    quote:
-      "Being part of AUTCSEA allows me to lead initiatives that truly bring students together and make learning computer science fun and collaborative.",
-    linkedin: "https://linkedin.com/in/kareena-kumar",
-    techStack: ["React", "TypeScript", "AWS"],
-  },
-  {
-    id: "1",
-    name: "Eden Bacani",
-    role: "Vice President",
-    avatar: "/images/testimonials/eden.png",
-    quote:
-      "I love helping organize events and workshops that give our members hands-on experience and connect them with like-minded peers.",
-    linkedin: "https://linkedin.com/in/eden-bacani",
-    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
-  },
-  {
-    id: "2",
-    name: "Param Patel",
-    role: "Secretary",
-    avatar: "/images/testimonials/param.png",
-    quote:
-      "Keeping the club organized and running smoothly is rewarding, and it's amazing to see ideas turn into real projects.",
-    linkedin: "https://linkedin.com/in/param-patel",
-    techStack: ["Python", "PostgreSQL", "Docker"],
-  },
-  {
-    id: "3",
-    name: "Chloe Kua",
-    role: "Treasurer",
-    avatar: "/images/testimonials/chloe.png",
-    quote:
-      "Managing the club's resources allows me to support exciting events and opportunities for every member to grow.",
-    linkedin: "https://linkedin.com/in/chloe-kua",
-    techStack: ["Vue.js", "Node.js", "Figma"],
-  },
-  {
-    id: "4",
     name: "Ali Mojdehi",
-    role: "Outreach Executive",
+    role: "President",
     avatar: "/images/testimonials/ali.png",
     quote:
       "I enjoy building connections with other clubs and organizations, helping our members access more opportunities and experiences.",
@@ -50,13 +10,53 @@ export const testimonials = [
     techStack: ["Go", "GraphQL", "Linux"],
   },
   {
+    id: "1",
+    name: "Humam Al-Taiff",
+    role: "Vice President",
+    avatar: "/images/testimonials/humam.webp",
+    quote:
+      "I am a Data-driven Computer Science student passionate about uncovering insights from complex datasets and delivering precise, reliable analysis that supports meaningful decisions.",
+    linkedin: "https://www.linkedin.com/in/humam-al-taiff-bb3a87273/",
+    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
+  },
+  {
+    id: "2",
+    name: "Fateh Bhular",
+    role: "General Executive",
+    avatar: "/images/testimonials/fateh.webp",
+    quote:
+      "I love helping bridge the gap between students and the tech industry, and lending a hand anytime!",
+    linkedin: "https://linkedin.com/in/param-patel",
+    techStack: ["Python", "PostgreSQL", "Docker"],
+  },
+  {
+    id: "3",
+    name: "Irene Kim",
+    role: "Social Media Manager",
+    avatar: "/images/testimonials/irene.webp",
+    quote:
+      "Professional memory-collector and unofficial behind-the-scenes spy. At CSEA, I get to document the fun, the techy events, and the moments that make our club what it is.",
+    linkedin: "https://linkedin.com",
+    techStack: ["Vue.js", "Node.js", "Figma"],
+  },
+  {
+    id: "4",
+    name: "Lydia Cowan ",
+    role: "Engineering Lead",
+    avatar: "/images/testimonials/lydia.webp",
+    quote:
+      "Keeping the club organized and running smoothly is rewarding, and it's amazing to see ideas turn into real projects.",
+    linkedin: "https://linkedin.com/",
+    techStack: ["Go", "GraphQL", "Linux"],
+  },
+  {
     id: "5",
-    name: "Francisca Nel",
-    role: "Lead Marketing",
-    avatar: "/images/testimonials/francisca.png",
+    name: "Sam Sajch",
+    role: "General Executive",
+    avatar: "/images/testimonials/sam.webp",
     quote:
       "Promoting our club and sharing our story is exciting, and seeing students get inspired by our events is the best part.",
-    linkedin: "https://linkedin.com/in/francisca-nel",
+    linkedin: "https://www.linkedin.com/in/samuel-sajch/",
     techStack: ["Figma", "Webflow", "Canva"],
   },
 ];
@@ -90,65 +90,72 @@ export const socials = [
 
 export const latestEvent = {
   id: 1,
-  title: "AUT Chess Open 2025",
-  date: "Saturday, 15 March 2025",
-  time: "10:00 AM – 5:00 PM",
-  location: "AUT City Campus, WG Building – Room 402",
+  title: "Internsip 101",
+  date: "Tuesday, 10 March 2026",
+  time: "6:00 PM – 8:00 PM",
+  location: "AUT City Campus, WG Building – Room 416",
   images: [
-    "/images/project-1.png",
-    "/images/project-2.png",
-    "/images/project-3.png",
+    "/images/events/internship-1.jpg",
+    "/images/events/internship-2.jpg",
+    "/images/events/internship-3.jpg",
   ],
-  description:
-    "Join us for our biggest tournament of the year! The AUT Chess Open 2025 is open to all students — from complete beginners to seasoned players. Compete for prizes, meet fellow chess enthusiasts, and enjoy a full day of competitive play.",
+  description: `Join us for Internship 101, where a panel of multiple students will share their firsthand experiences from summer internships at tech companies!
+
+Our panel features intern guest speakers in Software Engineering, Cybersecurity, and IT Infrastructure from top companies like Deloitte, Endace, Visa and more.
+
+Hear their firsthand experiences, challenges, and career tips—this is your chance to get the inside scoop on landing and thriving in a tech internship! ✨`,
   spotsLeft: 12,
   totalSpots: 60,
-  tags: ["Tournament", "Open to All", "Prizes"],
-  registerLink: "#",
+  tags: ["Workshop", "Open to All", "Games"],
+  registerLink: "https://forms.gle/B35sLWsog8cmdyKm9",
 };
 
 export const pastEvents = [
   {
     id: 2,
-    title: "End-of-Year Chess Blitz",
-    date: "8 November 2024",
-    location: "WG Building – Room 301",
+    title: "Internship 101",
+    date: "10 March 2026",
+    location: "WG Building – Room 416",
     images: [
-      "/images/project-1.png",
-      "/images/project-2.png",
-      "/images/project-3.png",
+      "/images/events/internship-1.jpg",
+      "/images/events/internship-2.jpg",
+      "/images/events/internship-3.jpg",
     ],
     summary:
-      "A fast-paced blitz tournament wrapping up Semester 2. 38 players competed across 7 rapid rounds.",
-    highlights: ["38 participants", "7 rounds", "3 prizes awarded"],
+      "A panel event where students shared their internship experiences in Software Engineering, Cybersecurity, and IT Infrastructure at companies like Deloitte, Visa, and Endace.",
+    highlights: ["Industry insights", "Guest speakers", "Career tipss"],
   },
   {
     id: 3,
-    title: "Beginners Workshop Series",
-    date: "April – May 2024",
-    location: "Online (Zoom)",
+    title: "STEM Socializer",
+    date: "3 March 2026",
+    location: "WZ Level 3",
     images: [
-      "/images/project-2.png",
-      "/images/project-3.png",
-      "/images/project-1.png",
+      "/images/events/socializer-1.jpg",
+      "/images/events/socializer-2.jpg",
+      "/images/events/socializer-3.jpg",
     ],
     summary:
-      "A four-session online workshop introducing chess fundamentals to new students. Over 50 people attended at least one session.",
-    highlights: ["4 sessions", "50+ attendees", "Free to join"],
+      "A casual networking event for STEM students to meet, connect, and build friendships within the AUT tech community.",
+    highlights: [
+      "Student networking",
+      "Community building",
+      "Games & conversations",
+    ],
   },
   {
     id: 4,
-    title: "Inter-Club Friendly Match",
-    date: "20 August 2024",
-    location: "AUT South Campus",
+    title: "Club Expo",
+    date: "23 February 2024",
+    location: "Hikuwai Plaza",
     images: [
-      "/images/project-3.png",
-      "/images/project-1.png",
-      "/images/project-2.png",
+      "/images/events/expo-1.jpg",
+      "/images/events/expo-2.jpg",
+      "/images/events/internship-3.jpg",
     ],
     summary:
-      "AUTCSEA faced off against the UoA Chess Club in a friendly inter-university match. A great day of chess and camaraderie.",
-    highlights: ["2 clubs", "20 boards", "Friendly format"],
+      "AUTCSEA participated in the AUT Club Expo to introduce the club to new students and showcase upcoming events and opportunities.",
+    highlights: ["Meet team", "Signups", "Merch & Giveaways"],
   },
 ];
 

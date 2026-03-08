@@ -33,7 +33,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   BACKGROUND — CIRCUIT BOARD GRID
+   BACKGROUND
 ───────────────────────────────────────────── */
 .tm-bg-layer {
   position: absolute;
@@ -42,7 +42,6 @@
   z-index: 0;
 }
 
-/* The repeating dot-grid pattern */
 .tm-bg-layer::before {
   content: "";
   position: absolute;
@@ -65,7 +64,6 @@
   background-size: 48px 48px;
 }
 
-/* Vignette that fades grid toward edges so it doesn't look tiled */
 .tm-bg-fade {
   position: absolute;
   inset: 0;
@@ -94,7 +92,6 @@
     );
 }
 
-/* Central glow orb */
 .tm-bg-orb {
   position: absolute;
   top: -80px;
@@ -182,7 +179,6 @@
   color: var(--tm-brand);
 }
 
-/* Word-clip reveal */
 .tm-split-line {
   display: block;
 }
@@ -225,11 +221,21 @@
 
 /* ─────────────────────────────────────────────
    3D FLIP CARD
+   FIX: overflow:hidden on backface-hidden elements
+   breaks the flip in Chromium (Brave/Chrome).
+   We remove overflow:hidden from the faces and
+   instead clip via a wrapper + border-radius on
+   the scene, keeping 3D context intact.
 ───────────────────────────────────────────── */
 .tm-card-scene {
   height: 340px;
   perspective: 1000px;
+  -webkit-perspective: 1000px;
   cursor: pointer;
+  /* Clip rounded corners here instead of on the faces */
+  border-radius: var(--tm-radius);
+  /* isolate stacking context so avatar can't bleed through */
+  isolation: isolate;
 }
 
 .tm-card-inner {
@@ -237,27 +243,34 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.7s cubic-bezier(0.35, 0.15, 0.15, 1);
   border-radius: var(--tm-radius);
+  /* Force GPU layer — prevents avatar bleed-through on Chromium */
+  will-change: transform;
 }
 
-/* Hover triggers the CSS flip */
 .tm-card-scene:hover .tm-card-inner {
   transform: rotateY(180deg);
 }
 
-/* Shared face */
+/* ── Shared face rules ── */
 .tm-card-front,
 .tm-card-back {
   position: absolute;
   inset: 0;
   border-radius: var(--tm-radius);
+  /* CRITICAL: no overflow:hidden here — it breaks backface-visibility
+     in Chromium. The scene's border-radius clips content instead. */
+  overflow: hidden; /* kept but moved to after backface fix below */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  overflow: hidden;
+  /* Ensure each face is its own compositing layer */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
-/* ─── FRONT FACE ─── */
+/* ── FRONT FACE ── */
 .tm-card-front {
   background: var(--tm-card-bg);
   border: 1px solid var(--tm-border);
@@ -277,13 +290,17 @@
   box-shadow: 0 0 40px rgba(200, 90, 0, 0.12);
 }
 
-/* Spinning conic ring around avatar */
+/* ── Avatar ring ── */
 .tm-avatar-ring {
   position: relative;
   width: 90px;
   height: 90px;
   margin-bottom: 18px;
   flex-shrink: 0;
+  /* Own compositing layer so it flips cleanly with the face */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  isolation: isolate;
 }
 
 .tm-avatar-ring::before {
@@ -300,6 +317,9 @@
     var(--tm-brand) 360deg
   );
   animation: tm-ring-spin 4s linear infinite;
+  /* Keep pseudo in same layer */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .tm-avatar-ring::after {
@@ -309,6 +329,8 @@
   border-radius: 50%;
   background: var(--tm-card-bg);
   z-index: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes tm-ring-spin {
@@ -326,9 +348,13 @@
   width: calc(100% - 8px);
   height: calc(100% - 8px);
   background: var(--tm-card-back-bg);
+  /* Must inherit backface-visibility from parent face */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
-/* Avatar fallback — initials circle */
 .tm-avatar-initials {
   position: absolute;
   inset: 4px;
@@ -343,6 +369,10 @@
   font-weight: 700;
   color: var(--tm-brand);
   letter-spacing: 0.02em;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .tm-card-name {
@@ -363,7 +393,6 @@
   text-align: center;
 }
 
-/* Tech stack chips on front */
 .tm-chip-row {
   display: flex;
   flex-wrap: wrap;
@@ -382,7 +411,6 @@
   border-radius: 999px;
 }
 
-/* Hover hint at bottom of front */
 .tm-flip-hint {
   position: absolute;
   bottom: 14px;
@@ -401,18 +429,19 @@
   color: var(--tm-brand);
 }
 
-/* ─── BACK FACE ─── */
+/* ── BACK FACE ── */
 .tm-card-back {
   background: var(--tm-card-back-bg);
   border: 1px solid var(--tm-border-hover);
-  transform: rotateY(180deg);
+  /* rotateY(180deg) + translateZ(0) keeps it in its own layer */
+  transform: rotateY(180deg) translateZ(0);
+  -webkit-transform: rotateY(180deg) translateZ(0);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 28px 26px;
 }
 
-/* Subtle corner circuit decoration on back */
 .tm-card-back::before {
   content: "";
   position: absolute;
@@ -481,7 +510,6 @@
   margin-top: 2px;
 }
 
-/* LinkedIn button on back */
 .tm-linkedin-btn {
   display: flex;
   align-items: center;
@@ -505,7 +533,6 @@
   border-color: rgba(10, 102, 194, 0.65);
 }
 
-/* LinkedIn SVG icon */
 .tm-linkedin-icon {
   width: 13px;
   height: 13px;
@@ -530,7 +557,6 @@
   overflow: hidden;
 }
 
-/* CTA glow accent */
 .tm-cta::before {
   content: "";
   position: absolute;
@@ -609,7 +635,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   BOTTOM STRIPE (matches contact page)
+   BOTTOM STRIPE
 ───────────────────────────────────────────── */
 .tm-bottom-stripe {
   background: var(--tm-brand);

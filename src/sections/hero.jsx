@@ -419,10 +419,10 @@ const Hero = () => {
 
   // ── Data ──────────────────────────────────────────────
   const stats = [
-    { value: 120, suffix: "+", label: "Active Members" },
-    { value: 8, suffix: "", label: "Projects Built" },
-    { value: 24, suffix: "", label: "Events Run" },
-    { value: 3, suffix: "", label: "Years Running" },
+    { value: 500, suffix: "+", label: "Active Members" },
+    { value: 0, suffix: "", label: "Projects Built" },
+    { value: 100, suffix: "", label: "Events Run" },
+    { value: 5, suffix: "", label: "Years Running" },
   ];
 
   const duplicatedLogos = [...logos, ...logos];
@@ -448,7 +448,7 @@ const Hero = () => {
         {/* ── Main content ── */}
         <div className="hr-inner hr-main-content ">
           {/* Badge */}
-          <div ref={badgeRef} className="hr-badge mt-12">
+          <div ref={badgeRef} className="hr-badge">
             <span className="hr-badge-dot" aria-hidden="true" />
             <span className="hr-badge-text ">
               AUT Computer Science &amp; Engineering Association
@@ -460,10 +460,10 @@ const Hero = () => {
           <div className="hr-heading-3d" aria-label="Create More">
             <h1 className="hr-heading">
               <span className="hr-word-gap">
-                <SplitLetters text="Create" />
+                <SplitLetters text="Get" />
               </span>
               <span className="hr-word-gap hr-word-accent">
-                <SplitLetters text="More." />
+                <SplitLetters text="Involved." />
               </span>
             </h1>
           </div>
@@ -475,8 +475,8 @@ const Hero = () => {
 
           {/* Sub-text */}
           <p ref={subRef} className="hr-sub">
-            A community of builders at AUT — shipping real projects, sharpening
-            technical skills, and competing on the world stage.
+            Come and be apart of something big on campus, whether you want to
+            learn, network or compete we’ve got something for you.
           </p>
 
           {/* CTA buttons */}

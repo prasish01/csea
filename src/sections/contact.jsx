@@ -1,10 +1,5 @@
-import {
-  useState,
-  useRef,
-  useLayoutEffect,
-  useEffect,
-  useCallback,
-} from "react";
+import { useRef, useLayoutEffect, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../styles/contact.css";
@@ -84,43 +79,6 @@ const Icons = {
       <circle cx="4" cy="4" r="2" />
     </svg>
   ),
-  Send: () => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m22 2-7 20-4-9-9-4Z" />
-      <path d="M22 2 11 13" />
-    </svg>
-  ),
-  Check: () => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  ),
-  ChevronDown: () => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  ),
   ArrowDown: () => (
     <svg
       viewBox="0 0 24 24"
@@ -134,10 +92,23 @@ const Icons = {
       <polyline points="19 12 12 19 5 12" />
     </svg>
   ),
+  ArrowRight: () => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  ),
 };
 
 /* ─────────────────────────────────────────────────────────
-   Starfield canvas
+   Starfield  (unchanged)
 ───────────────────────────────────────────────────────── */
 const StarField = ({ canvasRef }) => {
   useEffect(() => {
@@ -176,12 +147,10 @@ const StarField = ({ canvasRef }) => {
           dy = s.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const boost = dist < 140 ? (1 - dist / 140) * 1.8 : 0;
-
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r + boost * 1.5, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,${(160 + boost * 40) | 0},${(100 + boost * 30) | 0},${Math.min(1, a + boost * 0.5)})`;
         ctx.fill();
-
         s.y -= s.speed;
         if (s.y < -5) {
           s.y = canvas.height + 5;
@@ -190,7 +159,6 @@ const StarField = ({ canvasRef }) => {
       });
       raf = requestAnimationFrame(draw);
     };
-
     raf = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(raf);
@@ -201,7 +169,7 @@ const StarField = ({ canvasRef }) => {
 };
 
 /* ─────────────────────────────────────────────────────────
-   Confetti
+   Confetti + Konami  (unchanged)
 ───────────────────────────────────────────────────────── */
 const triggerConfetti = () => {
   const colors = [
@@ -231,7 +199,6 @@ const triggerConfetti = () => {
   });
 };
 
-/* Konami code */
 const KONAMI = [
   "ArrowUp",
   "ArrowUp",
@@ -260,6 +227,44 @@ const useKonami = (cb) => {
 };
 
 /* ─────────────────────────────────────────────────────────
+   Connect channels data
+───────────────────────────────────────────────────────── */
+const CHANNELS = [
+  {
+    Icon: Icons.Discord,
+    label: "Discord",
+    sub: "Most active — hang out, get updates, ask questions",
+    href: "https://discord.com/invite/AUQFxgxd",
+    cta: "Join server",
+    color: "#5865f2",
+  },
+  {
+    Icon: Icons.Mail,
+    label: "Email",
+    sub: "autcsea@gmail.com — we reply within 1–2 days",
+    href: "mailto:autcsea@gmail.com",
+    cta: "Send email",
+    color: "#c85a00",
+  },
+  {
+    Icon: Icons.Instagram,
+    label: "Instagram",
+    sub: "@autcsea — events, photos & announcements",
+    href: "https://www.instagram.com/autcsea",
+    cta: "Follow us",
+    color: "#e1306c",
+  },
+  {
+    Icon: Icons.LinkedIn,
+    label: "LinkedIn",
+    sub: "autcsea — connect with members & alumni",
+    href: "https://www.linkedin.com/company/autcsea/",
+    cta: "Connect",
+    color: "#0a66c2",
+  },
+];
+
+/* ─────────────────────────────────────────────────────────
    Main Contact
 ───────────────────────────────────────────────────────── */
 const Contact = () => {
@@ -268,25 +273,10 @@ const Contact = () => {
   const cursorRef = useRef(null);
   const bgTextRef = useRef(null);
   const infoColRef = useRef(null);
-  const formColRef = useRef(null);
-  const formInnerRef = useRef(null);
-  const successRef = useRef(null);
-  const planeRef = useRef(null);
+  const connectRef = useRef(null);
   const hintRef = useRef(null);
-  const overlayRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    type: "",
-    message: "",
-  });
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  const handleChange = (e) =>
-    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
-
-  // ── Cursor glow ──────────────────────────────────────
+  /* Cursor glow */
   useEffect(() => {
     const el = cursorRef.current;
     if (!el) return;
@@ -301,26 +291,24 @@ const Contact = () => {
     return () => window.removeEventListener("mousemove", move);
   }, []);
 
-  // ── BG text parallax ─────────────────────────────────
+  /* BG text parallax */
   useEffect(() => {
     const el = bgTextRef.current;
     if (!el) return;
-    const move = (e) => {
+    const move = (e) =>
       gsap.to(el, {
         x: (e.clientX / window.innerWidth - 0.5) * 40,
         y: (e.clientY / window.innerHeight - 0.5) * 20,
         duration: 1.2,
         ease: "power2.out",
       });
-    };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, []);
 
-  // ── Entrance animations ───────────────────────────────
+  /* Entrance animations */
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero
       gsap.to(".ct-eyebrow", {
         opacity: 1,
         duration: 0.6,
@@ -348,7 +336,6 @@ const Contact = () => {
       });
       gsap.to(".ct-scroll-cue", { opacity: 1, duration: 0.6, delay: 1.0 });
 
-      // Body columns on scroll
       gsap.to(infoColRef.current, {
         scrollTrigger: { trigger: infoColRef.current, start: "top 85%" },
         opacity: 1,
@@ -356,65 +343,28 @@ const Contact = () => {
         duration: 0.75,
         ease: "power3.out",
       });
-      gsap.to(formColRef.current, {
-        scrollTrigger: { trigger: formColRef.current, start: "top 85%" },
+      gsap.to(connectRef.current, {
+        scrollTrigger: { trigger: connectRef.current, start: "top 85%" },
         opacity: 1,
         x: 0,
         duration: 0.75,
         ease: "power3.out",
         delay: 0.1,
       });
+      gsap.from(".ct-connect-link", {
+        scrollTrigger: { trigger: connectRef.current, start: "top 82%" },
+        y: 24,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.55,
+        ease: "power3.out",
+        delay: 0.25,
+      });
     }, pageRef);
     return () => ctx.revert();
   }, []);
 
-  // ── Submit → paper plane overlay ─────────────────────
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowOverlay(true);
-    requestAnimationFrame(() => {
-      if (!planeRef.current) return;
-      gsap.fromTo(
-        planeRef.current,
-        { x: "-130vw", y: 20, rotation: -15, opacity: 1 },
-        {
-          x: "0vw",
-          y: 0,
-          rotation: 0,
-          duration: 1.0,
-          ease: "power3.out",
-          onComplete: () => {
-            gsap.to(planeRef.current, {
-              x: "130vw",
-              y: -60,
-              rotation: 15,
-              duration: 0.7,
-              ease: "power2.in",
-              delay: 0.7,
-            });
-            gsap.to(".ct-success-overlay-title", {
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              delay: 0.3,
-            });
-            gsap.to(".ct-success-overlay-msg", {
-              opacity: 1,
-              duration: 0.6,
-              delay: 0.5,
-            });
-            gsap.to(".ct-success-back", {
-              opacity: 1,
-              duration: 0.5,
-              delay: 0.7,
-            });
-          },
-        },
-      );
-    });
-  };
-
-  // ── Easter egg: konami ────────────────────────────────
+  /* Easter egg */
   const onKonami = useCallback(() => {
     triggerConfetti();
     if (hintRef.current) {
@@ -423,10 +373,8 @@ const Contact = () => {
       setTimeout(() => hintRef.current?.classList.remove("peek"), 4000);
     }
   }, []);
-
   useKonami(onKonami);
 
-  // Idle hint
   useEffect(() => {
     const t = setTimeout(() => {
       if (hintRef.current) {
@@ -437,7 +385,6 @@ const Contact = () => {
     return () => clearTimeout(t);
   }, []);
 
-  // Footer click x7
   const clickCount = useRef(0);
   const handleFooterClick = () => {
     if (++clickCount.current >= 7) {
@@ -447,7 +394,7 @@ const Contact = () => {
   };
 
   const infoItems = [
-    { Icon: Icons.Mail, label: "Email", val: "hello@autcsea.co.nz" },
+    { Icon: Icons.Mail, label: "Email", val: "autcsea@gmail.com" },
     { Icon: Icons.Discord, label: "Discord", val: "discord.gg/autcsea" },
     { Icon: Icons.MapPin, label: "Location", val: "AUT City Campus, Auckland" },
     { Icon: Icons.Clock, label: "Club Hours", val: "Wed & Fri · 12–2 PM" },
@@ -455,8 +402,16 @@ const Contact = () => {
 
   const socialLinks = [
     { Icon: Icons.Twitter, href: "#", label: "Twitter" },
-    { Icon: Icons.Instagram, href: "#", label: "Instagram" },
-    { Icon: Icons.LinkedIn, href: "#", label: "LinkedIn" },
+    {
+      Icon: Icons.Instagram,
+      href: "https://www.instagram.com/autcsea",
+      label: "Instagram",
+    },
+    {
+      Icon: Icons.LinkedIn,
+      href: "https://www.linkedin.com/company/autcsea/",
+      label: "LinkedIn",
+    },
   ];
 
   return (
@@ -487,12 +442,11 @@ const Contact = () => {
 
         <p className="ct-subtitle">
           Got a project idea, want to collaborate, or just want to say hi? We're
-          builders — drop us a message.
+          builders — come find us.
         </p>
 
         <a href="#ct-body" className="ct-hero-cta ct-serif">
-          Get in touch
-          <Icons.ArrowDown />
+          Get in touch <Icons.ArrowDown />
         </a>
 
         <div className="ct-scroll-cue" aria-hidden="true">
@@ -503,13 +457,12 @@ const Contact = () => {
 
       {/* ══ BODY ══ */}
       <div className="ct-body" id="ct-body">
-        {/* ── Info column ── */}
+        {/* Info column — untouched */}
         <div ref={infoColRef} className="ct-info-col">
           <h2 className="ct-info-heading ct-serif">Say hello</h2>
           <p className="ct-info-sub">
             We'd love to hear from you. Here's where you can find us.
           </p>
-
           <div className="ct-info-list">
             {infoItems.map(({ Icon, label, val }) => (
               <div key={label} className="ct-info-item">
@@ -523,7 +476,6 @@ const Contact = () => {
               </div>
             ))}
           </div>
-
           <div className="ct-social-row">
             {socialLinks.map(({ Icon, href, label }) => (
               <a
@@ -540,112 +492,59 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* ── Form column ── */}
-        <div ref={formColRef} className="ct-form-col">
+        {/* ── Connect panel — replaces form ── */}
+        <div ref={connectRef} className="ct-form-col">
           <div className="ct-form-card">
-            {/* Form */}
-            <div ref={formInnerRef}>
-              <h3 className="ct-form-title ct-serif">Send a message</h3>
-              <p className="ct-form-sub">
-                We'll get back to you within 1–2 business days.
+            <h3 className="ct-form-title ct-serif">Connect with us</h3>
+            <p className="ct-form-sub">
+              We're active across all these channels. Discord is the fastest way
+              to reach us.
+            </p>
+
+            <div className="ct-connect-list">
+              {CHANNELS.map(({ Icon, label, sub, href, cta, color }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className="ct-connect-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ "--cc": color }}
+                >
+                  <span className="ct-connect-icon">
+                    <Icon />
+                  </span>
+                  <span className="ct-connect-body">
+                    <span className="ct-connect-label ct-mono">{label}</span>
+                    <span className="ct-connect-sub">{sub}</span>
+                  </span>
+                  <span className="ct-connect-cta">
+                    {cta}&nbsp;<span className="ct-connect-arrow">→</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            {/* Join CTA */}
+            <div className="ct-connect-join">
+              <p className="ct-connect-join-text">
+                Want to become a member? No commitment needed — just let us know
+                you're interested.
               </p>
-
-              <form className="ct-form" onSubmit={handleSubmit} noValidate>
-                <div className="ct-row">
-                  <div className="ct-field">
-                    <label className="ct-field-label ct-mono">Name</label>
-                    <input
-                      className="ct-input"
-                      type="text"
-                      name="name"
-                      placeholder="Alex Johnson"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="ct-field">
-                    <label className="ct-field-label ct-mono">Email</label>
-                    <input
-                      className="ct-input"
-                      type="email"
-                      name="email"
-                      placeholder="alex@aut.ac.nz"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="ct-field">
-                  <label className="ct-field-label ct-mono">Type</label>
-                  <div className="ct-select-wrap">
-                    <select
-                      className="ct-select"
-                      name="type"
-                      value={formData.type}
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled>
-                        Select a reason...
-                      </option>
-                      <option value="project">Project Idea</option>
-                      <option value="collab">Collaboration</option>
-                      <option value="join">Join the Club</option>
-                      <option value="sponsor">Sponsorship</option>
-                      <option value="general">General Enquiry</option>
-                    </select>
-                    <Icons.ChevronDown />
-                  </div>
-                </div>
-
-                <div className="ct-field">
-                  <label className="ct-field-label ct-mono">Message</label>
-                  <textarea
-                    className="ct-textarea"
-                    name="message"
-                    placeholder="Tell us what's on your mind..."
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <button type="submit" className="ct-submit-btn">
-                  <Icons.Send />
-                  Send Message
-                </button>
-              </form>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSf8Zy5MsRAiP8cSS00yysoDXCHMiWwD-W553cxt6ZXBDqTrqQ/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ct-submit-btn"
+              >
+                Get Involved →
+              </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ══ SUCCESS OVERLAY ══ */}
-      {showOverlay && (
-        <div ref={overlayRef} className="ct-success-overlay visible">
-          <span ref={planeRef} className="ct-plane" aria-hidden="true">
-            ✈️
-          </span>
-          <h2 className="ct-success-overlay-title ct-serif">Message Sent!</h2>
-          <p className="ct-success-overlay-msg">
-            Thanks for reaching out, {formData.name || "friend"}! We'll get back
-            to you shortly.
-          </p>
-          <button
-            className="ct-success-back"
-            onClick={() => {
-              setShowOverlay(false);
-              setFormData({ name: "", email: "", type: "", message: "" });
-            }}
-          >
-            ← Send another
-          </button>
-        </div>
-      )}
-
-      {/* ══ FOOTER ══ */}
+      {/* ══ FOOTER STRIP ══ */}
       <div className="ct-footer-strip">
         <span
           className="ct-footer-label ct-mono"
@@ -654,15 +553,11 @@ const Contact = () => {
         >
           AUT Computer Science &amp; Engineering Association
         </span>
-        <a
-          href="mailto:hello@autcsea.co.nz"
-          className="ct-footer-email ct-serif"
-        >
-          hello@autcsea.co.nz →
+        <a href="mailto:autcsea@gmail.com" className="ct-footer-email ct-serif">
+          autcsea@gmail.com →
         </a>
       </div>
 
-      {/* Easter egg hint */}
       <div ref={hintRef} className="ct-easter-hint ct-mono">
         ↑↑↓↓←→←→ b a — try it
       </div>
