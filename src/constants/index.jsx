@@ -6,7 +6,7 @@ export const testimonials = [
     avatar: "/images/testimonials/ali.png",
     quote:
       "I enjoy building connections with other clubs and organizations, helping our members access more opportunities and experiences.",
-    linkedin: "https://linkedin.com/in/ali-mojdehi",
+    linkedin: "https://www.linkedin.com/in/ali-mojdehi-641747333/",
     techStack: ["Go", "GraphQL", "Linux"],
   },
   {
