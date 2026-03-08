@@ -26,7 +26,7 @@ export const testimonials = [
     avatar: "/images/testimonials/fateh.webp",
     quote:
       "I love helping bridge the gap between students and the tech industry, and lending a hand anytime!",
-    linkedin: "https://linkedin.com/in/param-patel",
+    linkedin: "https://www.linkedin.com/in/fateh-bhular-228bb1340/",
     techStack: ["Python", "PostgreSQL", "Docker"],
   },
   {
