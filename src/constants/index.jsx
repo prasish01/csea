@@ -59,6 +59,25 @@ export const testimonials = [
     linkedin: "https://www.linkedin.com/in/samuel-sajch/",
     techStack: ["Figma", "Webflow", "Canva"],
   },
+  {
+    id: "6",
+    name: "Kiesya Lew",
+    role: "Secretary",
+    avatar: "/images/testimonials/kiesya.webp",
+    quote:
+      "Excited to support behind the scenes, keep things organized, and help the team create a better experience for every CSEA member.",
+    linkedin: "https://www.linkedin.com/in/kiesyal/",
+    techStack: ["Vue.js", "Node.js", "Figma"],
+  },
+  {
+    id: "7",
+    name: "Priyal Sharma",
+    role: "Computer Science Lead",
+    avatar: "/images/testimonials/priyal.webp",
+    quote: `I’m excited to help students discover opportunities, meet inspiring people in the industry, and see where their interests could take them.`,
+    linkedin: "https://www.linkedin.com/in/priyal-sharma-822b53342/",
+    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
+  },
 ];
 
 export const socials = [
