@@ -21,23 +21,22 @@ export const testimonials = [
   },
   {
     id: "2",
-    name: "Fateh Bhular",
-    role: "General Executive",
-    avatar: "/images/testimonials/fateh.webp",
+    name: "Kiesya Lew",
+    role: "Secretary",
+    avatar: "/images/testimonials/kiesya.webp",
     quote:
-      "I love helping bridge the gap between students and the tech industry, and lending a hand anytime!",
-    linkedin: "https://www.linkedin.com/in/fateh-bhular-228bb1340/",
-    techStack: ["Python", "PostgreSQL", "Docker"],
+      "Excited to support behind the scenes, keep things organized, and help the team create a better experience for every CSEA member.",
+    linkedin: "https://www.linkedin.com/in/kiesyal/",
+    techStack: ["Vue.js", "Node.js", "Figma"],
   },
   {
     id: "3",
-    name: "Irene Kim",
-    role: "Social Media Manager",
-    avatar: "/images/testimonials/irene.webp",
-    quote:
-      "Professional memory-collector and unofficial behind-the-scenes spy. At CSEA, I get to document the fun, the techy events, and the moments that make our club what it is.",
-    linkedin: "https://linkedin.com",
-    techStack: ["Vue.js", "Node.js", "Figma"],
+    name: "Priyal Sharma",
+    role: "Computer Science Lead",
+    avatar: "/images/testimonials/priyal.webp",
+    quote: `I’m excited to help students discover opportunities, meet inspiring people in the industry, and see where their interests could take them.`,
+    linkedin: "https://www.linkedin.com/in/priyal-sharma-822b53342/",
+    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
   },
   {
     id: "4",
@@ -50,6 +49,17 @@ export const testimonials = [
     techStack: ["Go", "GraphQL", "Linux"],
   },
   {
+    id: "6",
+    name: "Irene Kim",
+    role: "Social Media Manager",
+    avatar: "/images/testimonials/irene.webp",
+    quote:
+      "Professional memory-collector and unofficial behind-the-scenes spy. At CSEA, I get to document the fun, the techy events, and the moments that make our club what it is.",
+    linkedin: "https://linkedin.com",
+    techStack: ["Vue.js", "Node.js", "Figma"],
+  },
+
+  {
     id: "5",
     name: "Sam Sajch",
     role: "General Executive",
@@ -60,23 +70,14 @@ export const testimonials = [
     techStack: ["Figma", "Webflow", "Canva"],
   },
   {
-    id: "6",
-    name: "Kiesya Lew",
-    role: "Secretary",
-    avatar: "/images/testimonials/kiesya.webp",
-    quote:
-      "Excited to support behind the scenes, keep things organized, and help the team create a better experience for every CSEA member.",
-    linkedin: "https://www.linkedin.com/in/kiesyal/",
-    techStack: ["Vue.js", "Node.js", "Figma"],
-  },
-  {
     id: "7",
-    name: "Priyal Sharma",
-    role: "Computer Science Lead",
-    avatar: "/images/testimonials/priyal.webp",
-    quote: `I’m excited to help students discover opportunities, meet inspiring people in the industry, and see where their interests could take them.`,
-    linkedin: "https://www.linkedin.com/in/priyal-sharma-822b53342/",
-    techStack: ["Next.js", "Tailwind CSS", "Firebase"],
+    name: "Fateh Bhular",
+    role: "General Executive",
+    avatar: "/images/testimonials/fateh.webp",
+    quote:
+      "I love helping bridge the gap between students and the tech industry, and lending a hand anytime!",
+    linkedin: "https://www.linkedin.com/in/fateh-bhular-228bb1340/",
+    techStack: ["Python", "PostgreSQL", "Docker"],
   },
 ];
 
