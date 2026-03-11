@@ -109,24 +109,21 @@ export const socials = [
 
 export const latestEvent = {
   id: 1,
-  title: "Internsip 101",
-  date: "Tuesday, 10 March 2026",
-  time: "6:00 PM – 8:00 PM",
-  location: "AUT City Campus, WG Building – Room 416",
+  title: "CV Workshop",
+  date: "Tuesday, 17 March 2026",
+  time: "4:00 PM – 5:00 PM",
+  location: "AUT City Campus, WG Building – Room 402",
   images: [
-    "/images/events/internship-1.jpg",
-    "/images/events/internship-2.jpg",
-    "/images/events/internship-3.jpg",
+    "/images/events/latest-1.jpg",
+    "/images/events/latest-2.jpg",
+    "/images/events/latest-3.jpg",
   ],
-  description: `Join us for Internship 101, where a panel of multiple students will share their firsthand experiences from summer internships at tech companies!
-
-Our panel features intern guest speakers in Software Engineering, Cybersecurity, and IT Infrastructure from top companies like Deloitte, Endace, Visa and more.
-
-Hear their firsthand experiences, challenges, and career tips—this is your chance to get the inside scoop on landing and thriving in a tech internship! ✨`,
+  description: `Join the CSEA CV Workshop to learn how to craft a resume that stands out to employers in the tech industry. Hosted by the Computer Science & Engineering Association (CSEA) and led by Elab, this interactive session will guide you through the essentials of building a strong CV, analysing real job descriptions, and identifying transferable skills that employers value.`,
   spotsLeft: 12,
   totalSpots: 60,
   tags: ["Workshop", "Open to All", "Games"],
-  registerLink: "https://forms.gle/B35sLWsog8cmdyKm9",
+  registerLink:
+    "https://docs.google.com/forms/d/e/1FAIpQLSdPEor-6REDEccu2mxOU7D2Pky3UuEFVhlSOh8sVygomY_4WQ/viewform",
 };
 
 export const pastEvents = [
@@ -136,9 +133,9 @@ export const pastEvents = [
     date: "10 March 2026",
     location: "WG Building – Room 416",
     images: [
-      "/images/events/internship-1.jpg",
-      "/images/events/internship-2.jpg",
-      "/images/events/internship-3.jpg",
+      "/images/events/intern-1.jpg",
+      "/images/events/intern-2.jpg",
+      "/images/events/intern-3.jpg",
     ],
     summary:
       "A panel event where students shared their internship experiences in Software Engineering, Cybersecurity, and IT Infrastructure at companies like Deloitte, Visa, and Endace.",
